@@ -7,7 +7,7 @@ import com.sun.org.apache.bcel.internal.generic.SWITCH;
 /**
  * C token enumeration
  *
- * @author isHudw dejavudwh
+ * @author dejavudwh isHudw
  */
 
 public enum Token {

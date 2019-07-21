@@ -3,7 +3,7 @@ package input;
 /**
  * FileHandler
  *
- * @author dejavudwh
+ * @author dejavudwh isHudw
  */
 
 public interface FileHandler {

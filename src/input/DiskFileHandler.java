@@ -4,8 +4,7 @@ import java.io.*;
 
 /**
  * DiskFileHandler
- *
- * @author isHudw dejavdwuh
+ * @author dejavdwuh isHudw
  */
 
 public class DiskFileHandler implements FileHandler {

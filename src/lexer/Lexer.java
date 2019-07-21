@@ -7,7 +7,7 @@ import java.util.HashMap;
 /**
  * Lexical analysis
  *
- * @author isHudw dejavudwh
+ * @author dejavudwh isHudw
  */
 
 public class Lexer {
@@ -42,7 +42,7 @@ public class Lexer {
                         break;
                     } else {
                         if (c == '"') {
-                            flag = true;
+                            flag = !flag;
                         }
                         current += c;
                     }
@@ -301,7 +301,7 @@ public class Lexer {
 
     public static void main(String[] args) {
         Lexer lexer = new Lexer();
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 3; i++) {
             lexer.advance();
             int token = lexer.lookAhead;
             System.out.println(Token.getTokenStr(token));
