@@ -25,6 +25,7 @@ public class DiskFileHandler implements FileHandler {
 
             while ((lineTxt = bufferedReader.readLine()) != null) {
                 sourceCode.append(lineTxt);
+                sourceCode.append('\n');
             }
             bufferedReader.close();
             read.close();
@@ -67,7 +68,10 @@ public class DiskFileHandler implements FileHandler {
         System.out.println(d.sourceCode);
         byte bs[] = new byte[20];
         d.read(bs, 3, 13);
-        System.out.println(new String(bs));
+//        System.out.println(new String(bs));
+        for (int i = 0; i < bs.length; i++) {
+            System.out.println(bs[i] + " " + (char) bs[i]);
+        }
     }
 
 }

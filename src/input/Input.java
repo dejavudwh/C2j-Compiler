@@ -106,7 +106,7 @@ public class Input {
         int got;
         need = END - startPos;
         if (need < 0) {
-            System.err.println("Internal Error (fillbuf): Bad read-request starting addr.");
+            System.err.println("Internal Error (fill buf): Bad read-request starting addr.");
         }
 
         if (need == 0) {
@@ -134,8 +134,10 @@ public class Input {
     public static void main(String[] args) {
         Input input = new Input();
         input.newFile();
-        int c = 0;
-        String b =  input.getWholeInput();
-        System.out.print(b + "   ");
+        for (int i = 0; i < 30; i++) {
+            byte b = input.inputAdvance();
+            System.out.println(b + "  " + (char) b);
+        }
     }
+
 }

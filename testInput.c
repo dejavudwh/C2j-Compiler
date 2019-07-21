@@ -1,2 +1,5 @@
-zhonghuarenminggongehguo   qianmianshikongge
-213123123 123213
+name
+
+for (int i = 0; i < 10; i++) {
+	printf("%d\n", i);
+}
