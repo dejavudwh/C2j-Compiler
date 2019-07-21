@@ -1,9 +1,9 @@
 package input;
 
 /**
- *  FileHandler
- *  @author dejavudwh
- *  @date 2019/7/10
+ * FileHandler
+ *
+ * @author dejavudwh
  */
 
 public interface FileHandler {

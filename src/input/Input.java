@@ -4,9 +4,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 /**
- *  Input class
+ * Input class
  *
- * @author isHudw
+ * @author isHudw dejavudwh
  */
 
 public class Input {
