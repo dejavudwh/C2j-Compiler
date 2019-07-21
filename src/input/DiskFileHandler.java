@@ -15,7 +15,7 @@ public class DiskFileHandler implements FileHandler {
     @Override
     public void open() {
         //TODO File path selection and Actually read directly into the file
-        File file = new File("src/testInput.c");
+        File file = new File("testInput.c");
         try {
             String encoding = "UTF-8";
             InputStreamReader read = new InputStreamReader(
@@ -47,6 +47,7 @@ public class DiskFileHandler implements FileHandler {
             readCount++;
         }
         curPos += readCount;
+
         return readCount;
     }
 
@@ -55,12 +56,17 @@ public class DiskFileHandler implements FileHandler {
         return 0;
     }
 
+    @Override
+    public StringBuffer getSourceCode() {
+        return sourceCode;
+    }
+
     public static void main(String[] args) {
         DiskFileHandler d = new DiskFileHandler();
         d.open();
         System.out.println(d.sourceCode);
         byte bs[] = new byte[20];
-        d.read(bs, 2, 13);
+        d.read(bs, 3, 13);
         System.out.println(new String(bs));
     }
 

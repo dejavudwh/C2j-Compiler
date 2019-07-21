@@ -1,5 +1,6 @@
 package input;
 
+import java.awt.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -68,6 +69,7 @@ public class Input {
             curCharLineno++;
         }
         endCurCharPos++;
+
         return inputBuf[next++];
     }
 
@@ -88,11 +90,9 @@ public class Input {
             leftEdge = next;
             copyPart = bufferEndFlag - leftEdge;
             System.arraycopy(inputBuf, leftEdge, inputBuf, 0, copyPart);
-            System.out.println("after shift    " + leftEdge + "  " + new String(inputBuf));
             if (fillBuf(copyPart) == 0) {
                 System.err.println("Internal Error, flush: Buffer full, can't read");
             }
-            System.out.println("after fill    "  + copyPart + "  " + new String(inputBuf));
 
             startCurCharPos -= leftEdge;
             endCurCharPos -= leftEdge;
@@ -105,7 +105,6 @@ public class Input {
         int need;
         int got;
         need = END - startPos;
-        System.out.println("need" + need);
         if (need < 0) {
             System.err.println("Internal Error (fillbuf): Bad read-request starting addr.");
         }
@@ -127,4 +126,16 @@ public class Input {
         return got;
     }
 
+    public String getWholeInput() {
+        //TODO The equivalent of input system doesn't work
+        return fileHandler.getSourceCode().toString();
+    }
+
+    public static void main(String[] args) {
+        Input input = new Input();
+        input.newFile();
+        int c = 0;
+        String b =  input.getWholeInput();
+        System.out.print(b + "   ");
+    }
 }
