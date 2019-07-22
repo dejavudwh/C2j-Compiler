@@ -1,6 +1,7 @@
 package parse;
 
 import lexer.Token;
+import test.ConsoleColor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,9 @@ public class FirstSetBuilder {
     private HashMap<Integer, Symbols> symbolMap = new HashMap<>();
     private ArrayList<Symbols> symbolArray = new ArrayList<>();
     private boolean runFirstSetPass = true;
+    private boolean debug = true;
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RESET = "\u001B[0m";
 
     public FirstSetBuilder() {
         initialize();
@@ -25,7 +29,7 @@ public class FirstSetBuilder {
         symbolArray = SyntaxProductionInit.getInstance().getSymbolArray();
     }
 
-    public void buildFirsetSets() {
+    public void buildFirstSets() {
         while (runFirstSetPass) {
             runFirstSetPass = false;
 
@@ -34,6 +38,12 @@ public class FirstSetBuilder {
                 Symbols symbol = it.next();
                 addSymbolFirstSet(symbol);
             }
+        }
+
+        if (debug) {
+            ConsoleColor.outPurple("First sets :");
+            printAllFirstSet();
+            ConsoleColor.outPurple("First sets end");
         }
     }
 
@@ -73,5 +83,26 @@ public class FirstSetBuilder {
                 } while (pos < rightSize.length && curSymbol.isNullable);
             }
         }
+    }
+
+    private void printAllFirstSet() {
+        Iterator<Symbols> it = symbolArray.iterator();
+        while (it.hasNext()) {
+            Symbols sym = it.next();
+            printFirstSet(sym);
+        }
+    }
+
+    private void printFirstSet(Symbols symbol) {
+
+        String s = Token.getTokenStr(symbol.value);
+        s += "{ ";
+        for (int i = 0; i < symbol.firstSet.size(); i++) {
+            s += Token.getTokenStr(symbol.firstSet.get(i)) + " ";
+        }
+        s += " }";
+
+        ConsoleColor.outCyan(s);
+        System.out.println("============");
     }
 }
