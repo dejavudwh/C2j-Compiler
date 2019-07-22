@@ -35,4 +35,24 @@ public class Production {
 
         return  product;
     }
+
+    public int getLeft() {
+        return left;
+    }
+
+    public ArrayList<Integer> getRight() {
+        return right;
+    }
+
+    public int getDotPos() {
+        return dotPos;
+    }
+
+    public int getDotSymbol() {
+        if (dotPos >= right.size()) {
+            return Token.UNKNOWN_TOKEN.ordinal();
+        }
+
+        return right.get(dotPos);
+    }
 }
