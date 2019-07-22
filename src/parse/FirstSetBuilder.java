@@ -16,7 +16,6 @@ public class FirstSetBuilder {
     private HashMap<Integer, Symbols> symbolMap = new HashMap<>();
     private ArrayList<Symbols> symbolArray = new ArrayList<>();
     private boolean runFirstSetPass = true;
-    private boolean debug = ConsoleDebugColor.DEBUG;
 
     public FirstSetBuilder() {
         initialize();
@@ -38,7 +37,7 @@ public class FirstSetBuilder {
             }
         }
 
-        if (debug) {
+        if (ConsoleDebugColor.DEBUG) {
             ConsoleDebugColor.outPurple("First sets :");
             printAllFirstSet();
             ConsoleDebugColor.outPurple("First sets end");

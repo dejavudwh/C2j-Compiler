@@ -14,35 +14,53 @@ public class ConsoleDebugColor {
     public static final String ANSI_WHITE = "\u001B[37m";
 
     public static void outBlue(String text) {
-        System.out.println(ANSI_BLUE + text + ANSI_RESET);
+        if (DEBUG) {
+            if (DEBUG) {
+                System.out.println(ANSI_BLUE + text + ANSI_RESET);
+            }
+        }
     }
 
     public static void outRed(String text) {
-        System.out.println(ANSI_RED + text + ANSI_RED);
+        if (DEBUG) {
+            System.out.println(ANSI_RED + text + ANSI_RED);
+        }
     }
 
     public static void outYellow(String text) {
-        System.out.println(ANSI_YELLOW + text + ANSI_RESET);
+        if (DEBUG) {
+            System.out.println(ANSI_YELLOW + text + ANSI_RESET);
+        }
     }
 
     public static void outBlack(String text) {
-        System.out.println(ANSI_BLACK + text + ANSI_RESET);
+        if (DEBUG) {
+            System.out.println(ANSI_BLACK + text + ANSI_RESET);
+        }
     }
 
     public static void outWhite(String text) {
-        System.out.println(ANSI_WHITE + text + ANSI_RESET);
+        if (DEBUG) {
+            System.out.println(ANSI_WHITE + text + ANSI_RESET);
+        }
     }
 
     public static void outGreen(String text) {
-        System.out.println(ANSI_GREEN + text + ANSI_RESET);
+        if (DEBUG) {
+            System.out.println(ANSI_GREEN + text + ANSI_RESET);
+        }
     }
 
     public static void outPurple(String text) {
-        System.out.println(ANSI_PURPLE + text + ANSI_RESET);
+        if (DEBUG) {
+            System.out.println(ANSI_PURPLE + text + ANSI_RESET);
+        }
     }
 
     public static void outCyan(String text) {
-        System.out.println(ANSI_CYAN + text + ANSI_RESET);
+        if (DEBUG) {
+            System.out.println(ANSI_CYAN + text + ANSI_RESET);
+        }
     }
 
 }

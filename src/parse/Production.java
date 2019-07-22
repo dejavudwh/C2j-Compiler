@@ -1,5 +1,6 @@
 package parse;
 
+import debug.ConsoleDebugColor;
 import lexer.Token;
 
 import java.util.ArrayList;
@@ -55,4 +56,43 @@ public class Production {
 
         return right.get(dotPos);
     }
+
+    public void print() {
+        ConsoleDebugColor.outBlue(Token.getTokenStr(left) + " -> " );
+        boolean printDot = false;
+        for (int i = 0; i < right.size(); i++) {
+            if (i == dotPos) {
+                printDot = true;
+                ConsoleDebugColor.outGreen(".");
+            }
+
+            ConsoleDebugColor.outCyan(Token.getTokenStr(right.get(i)) + " ");
+        }
+
+        if (!printDot) {
+            ConsoleDebugColor.outGreen(".");
+        }
+
+        System.out.print("look ahead set: { ");
+        for (int i = 0; i < lookAhead.size(); i++) {
+            System.out.print(Token.getTokenStr(lookAhead.get(i)) + " ");
+        }
+        System.out.println("}");
+    }
+
+    public void printBeta() {
+        System.out.print("Beta part of production is: ");
+        for (int i = dotPos + 1; i < right.size(); i++) {
+            //System.out.print(SymbolDefine.getSymbolStr(right.get(i)) + " ");
+            int val = right.get(i);
+            ConsoleDebugColor.outCyan(Token.values()[val].toString());
+        }
+
+        if (dotPos+1 >= right.size()) {
+            ConsoleDebugColor.outCyan("null");
+        }
+
+        System.out.println();
+    }
+
 }
