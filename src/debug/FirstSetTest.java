@@ -1,4 +1,4 @@
-package test;
+package debug;
 
 import parse.FirstSetBuilder;
 

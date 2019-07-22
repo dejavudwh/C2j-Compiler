@@ -72,7 +72,7 @@ public class SyntaxProductionInit {
          *
          */
         //PROGRAM -> EXT_DEF_LIST
-        ArrayList<Integer> right = null;
+        ArrayList<Integer> right;
         right = getProductionRight(new int[]{Token.EXT_DEF_LIST.ordinal()});
         Production production = new Production(productionNum, Token.PROGRAM.ordinal(), 0, right);
         productionNum++;
@@ -218,4 +218,9 @@ public class SyntaxProductionInit {
     public ArrayList<Symbols> getSymbolArray() {
         return symbolArray;
     }
+
+    public HashMap<Integer, ArrayList<Production>> getProductionMap() {
+        return productionMap;
+    }
+
 }

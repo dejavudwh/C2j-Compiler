@@ -1,7 +1,7 @@
 package parse;
 
 import lexer.Token;
-import test.ConsoleColor;
+import debug.ConsoleDebugColor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,9 +16,7 @@ public class FirstSetBuilder {
     private HashMap<Integer, Symbols> symbolMap = new HashMap<>();
     private ArrayList<Symbols> symbolArray = new ArrayList<>();
     private boolean runFirstSetPass = true;
-    private boolean debug = true;
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_RESET = "\u001B[0m";
+    private boolean debug = ConsoleDebugColor.DEBUG;
 
     public FirstSetBuilder() {
         initialize();
@@ -41,9 +39,9 @@ public class FirstSetBuilder {
         }
 
         if (debug) {
-            ConsoleColor.outPurple("First sets :");
+            ConsoleDebugColor.outPurple("First sets :");
             printAllFirstSet();
-            ConsoleColor.outPurple("First sets end");
+            ConsoleDebugColor.outPurple("First sets end");
         }
     }
 
@@ -94,7 +92,6 @@ public class FirstSetBuilder {
     }
 
     private void printFirstSet(Symbols symbol) {
-
         String s = Token.getTokenStr(symbol.value);
         s += "{ ";
         for (int i = 0; i < symbol.firstSet.size(); i++) {
@@ -102,7 +99,7 @@ public class FirstSetBuilder {
         }
         s += " }";
 
-        ConsoleColor.outCyan(s);
+        ConsoleDebugColor.outCyan(s);
         System.out.println("============");
     }
 }
