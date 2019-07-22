@@ -23,7 +23,7 @@ public class SyntaxProductionInit {
         addTerminalToSymbolMapAndArray();
     }
 
-    public SyntaxProductionInit getInstance() {
+    public static SyntaxProductionInit getInstance() {
         if (instance == null) {
             instance = new SyntaxProductionInit();
         }
@@ -209,5 +209,13 @@ public class SyntaxProductionInit {
         }
 
         return right;
+    }
+
+    public HashMap<Integer, Symbols> getSymbolMap() {
+        return symbolMap;
+    }
+
+    public ArrayList<Symbols> getSymbolArray() {
+        return symbolArray;
     }
 }
