@@ -22,9 +22,7 @@ public class ProductionsStateNode {
 
     public ProductionsStateNode(ArrayList<Production> productions) {
         this.stateNum = stateNumCount;
-
         this.productions = productions;
-
         this.closureSet.addAll(this.productions);
         increaseStateNum();
     }
