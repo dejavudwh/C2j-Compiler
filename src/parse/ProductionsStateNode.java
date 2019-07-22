@@ -1,6 +1,7 @@
 package parse;
 
 import debug.ConsoleDebugColor;
+import lexer.Token;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public class ProductionsStateNode {
     /** Finish the closure generation partition */
     private HashMap<Integer, ArrayList<Production>> partition = new HashMap<>();
     private boolean transitionDone = false;
+
+    private ProductionManager productionManager = ProductionManager.getInstance();
 
     public ProductionsStateNode(ArrayList<Production> productions) {
         this.stateNum = stateNumCount;
@@ -60,6 +63,16 @@ public class ProductionsStateNode {
                 production.print();
                 production.printBeta();
             }
+
+            if (Token.isTerminal(production.getDotSymbol())) {
+                ConsoleDebugColor.outPurple("symbol after dot is not non-terminal, ignore and process next item");
+                continue;
+            }
+
+            int symbol = production.getDotSymbol();
+            ArrayList<Production> closures = productionManager.getProduction(symbol);
+            ArrayList<Integer> lookAhead = production.computeFirstSetOfBetaAndc();
+
         }
     }
 }

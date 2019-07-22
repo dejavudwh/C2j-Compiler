@@ -57,6 +57,40 @@ public class Production {
         return right.get(dotPos);
     }
 
+    public ArrayList<Integer> computeFirstSetOfBetaAndc() {
+        ArrayList<Integer> set = new ArrayList<>();
+        for (int i = dotPos + 1; i < right.size(); i++) {
+            set.add(right.get(i));
+        }
+
+        ProductionManager manager = ProductionManager.getInstance();
+        ArrayList<Integer> firstSet = new ArrayList<>();
+
+        if (set.size() > 0) {
+            for (int i = 0; i < set.size(); i++) {
+                ArrayList<Integer> lookAhead = manager.getFirstSetBuilder().getFirstSet(set.get(i));
+
+                for (int s : lookAhead) {
+                    if (!firstSet.contains(s)) {
+                        firstSet.add(s);
+                    }
+                }
+
+                if (!manager.getFirstSetBuilder().isSymbolNullable(set.get(i))) {
+                    break;
+                }
+
+                if (i == lookAhead.size() - 1) {
+                    firstSet.addAll(this.lookAhead);
+                }
+            }
+        } else {
+            firstSet.addAll(lookAhead);
+        }
+
+        return firstSet;
+    }
+    
     public void print() {
         ConsoleDebugColor.outBlue(Token.getTokenStr(left) + " -> " );
         boolean printDot = false;

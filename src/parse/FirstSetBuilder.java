@@ -82,6 +82,27 @@ public class FirstSetBuilder {
         }
     }
 
+    public ArrayList<Integer> getFirstSet(int symbol) {
+        Iterator<Symbols> it = symbolArray.iterator();
+        while (it.hasNext()) {
+            Symbols sym = it.next();
+            if (sym.value == symbol) {
+                return sym.firstSet;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean isSymbolNullable(int sym) {
+        Symbols symbol= symbolMap.get(sym);
+        if (symbol == null) {
+            return false;
+        }
+
+        return symbol.isNullable;
+    }
+
     private void printAllFirstSet() {
         Iterator<Symbols> it = symbolArray.iterator();
         while (it.hasNext()) {

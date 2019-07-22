@@ -36,4 +36,7 @@ public class ProductionManager {
         return firstSetBuilder;
     }
 
+    public ArrayList<Production> getProduction(int symbol) {
+        return productionMap.get(symbol);
+    }
 }
