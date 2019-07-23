@@ -3,10 +3,7 @@ package parse;
 import debug.ConsoleDebugColor;
 import lexer.Token;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * LR finite state automaton node
@@ -46,7 +43,7 @@ public class ProductionsStateNode {
 
         /** Closure of a node's production */
         makeClosure();
-
+        partition();
     }
 
     private void makeClosure() {
@@ -89,8 +86,9 @@ public class ProductionsStateNode {
                     ConsoleDebugColor.outlnPurple("the production is already exist!");
                 }
             }
-
         }
+
+        debugPrintClosure();
     }
 
     private void removeRedundantProduction(Production product) {
@@ -113,10 +111,38 @@ public class ProductionsStateNode {
         }
     }
 
-    private void printClosure() {
+    private void partition() {
+        for (Production production : closureSet) {
+            int symbol = production.getDotSymbol();
+            if (symbol == Token.UNKNOWN_TOKEN.ordinal()) {
+                continue;
+            }
+
+            ArrayList<Production> productions = partition.computeIfAbsent(symbol, k -> new ArrayList<>());
+            if (!productions.contains(production)) {
+                productions.add(production);
+            }
+        }
+
+        debugPrintPartition();
+    }
+
+    private void debugPrintClosure() {
         ConsoleDebugColor.outlnPurple("Closure Sets is: ");
         for (int i = 0; i < closureSet.size(); i++) {
             closureSet.get(i).debugPrint();
+        }
+    }
+
+    private void debugPrintPartition() {
+        for(Map.Entry<Integer, ArrayList<Production>> entry : partition.entrySet()) {
+
+            ConsoleDebugColor.outlnPurple("partition for symbol: " + Token.getTokenStr(entry.getKey()));
+
+            ArrayList<Production> productionList = entry.getValue();
+            for (int i = 0; i < productionList.size(); i++) {
+                productionList.get(i).debugPrint();
+            }
         }
     }
 }
