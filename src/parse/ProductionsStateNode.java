@@ -13,9 +13,10 @@ import java.util.*;
 public class ProductionsStateNode {
     public static int stateNumCount = 0;
     /** Automaton state node number */
-    private int stateNum;
+    public int stateNum;
     /** production of state node */
     private ArrayList<Production> productions;
+    private ArrayList<Production> mergedProduction;
     /** Node generated closures */
     private ArrayList<Production> closureSet = new ArrayList<>();
     /** Finish the closure generation partition */
@@ -185,6 +186,18 @@ public class ProductionsStateNode {
 
     public boolean isTransitionDone() {
         return transitionDone;
+    }
+
+    public void stateMerge(ProductionsStateNode node) {
+        if (this.productions.contains(node.productions)) {
+            for (int i = 0; i < node.productions.size(); i++) {
+                if (this.productions.contains(node.productions.get(i))
+                        && mergedProduction.contains(node.productions.get(i))
+                ) {
+                    mergedProduction.add(node.productions.get(i));
+                }
+            }
+        }
     }
 
     public void debugPrint() {

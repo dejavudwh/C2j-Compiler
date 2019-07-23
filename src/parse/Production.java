@@ -83,7 +83,8 @@ public class Production {
                 if (i == lookAhead.size() - 1) {
                     //beta is composed by nulleable terms
                     firstSet.addAll(this.lookAhead);
-                }            }
+                }
+            }
         } else {
             firstSet.addAll(lookAhead);
         }

@@ -1,7 +1,10 @@
 package parse;
 
+import debug.ConsoleDebugColor;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  *
@@ -12,6 +15,8 @@ public class StateNodeManager {
     private static StateNodeManager instance;
 
     private ArrayList<ProductionsStateNode> stateList = new ArrayList<>();
+    private boolean isTransitionTableCompressed = true;
+    private ArrayList<ProductionsStateNode> compressedStateList = new ArrayList<>();
     private HashMap<ProductionsStateNode, HashMap<Integer, ProductionsStateNode>> transitionMap = new HashMap<>();
 
     private StateNodeManager() {}
@@ -43,6 +48,12 @@ public class StateNodeManager {
     }
 
     public void addTransition(ProductionsStateNode from, ProductionsStateNode to, int on) {
+        /* Compress the finite state machine nodes */
+        if (isTransitionTableCompressed) {
+            from = getAndMergeSimilarStates(from);
+            to   = getAndMergeSimilarStates(to);
+        }
+
         HashMap<Integer, ProductionsStateNode> map = transitionMap.get(from);
         if (map == null) {
             map = new HashMap<>();
@@ -50,5 +61,33 @@ public class StateNodeManager {
 
         map.put(on, to);
         transitionMap.put(from, map);
+    }
+
+    private ProductionsStateNode getAndMergeSimilarStates(ProductionsStateNode node) {
+        Iterator<ProductionsStateNode> it = stateList.iterator();
+        ProductionsStateNode currentNode = null, returnNode = node;
+
+        while (it.hasNext()) {
+            currentNode = it.next();
+
+            if (!currentNode.equals(node) && currentNode.checkProductionEqual(node, true)) {
+                if (currentNode.stateNum < node.stateNum) {
+                    currentNode.stateMerge(node);
+                    returnNode = currentNode;
+                }
+                else {
+                    node.stateMerge(currentNode);
+                    returnNode = node;
+                }
+                break;
+            }
+        }
+
+        if (compressedStateList.contains(returnNode)) {
+            compressedStateList.add(returnNode);
+        }
+
+        return returnNode;
+
     }
 }
