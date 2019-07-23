@@ -38,9 +38,9 @@ public class FirstSetBuilder {
         }
 
         if (ConsoleDebugColor.DEBUG) {
-            ConsoleDebugColor.outPurple("First sets :");
+            ConsoleDebugColor.outlnPurple("First sets :");
             printAllFirstSet();
-            ConsoleDebugColor.outPurple("First sets end");
+            ConsoleDebugColor.outlnPurple("First sets end");
         }
     }
 
@@ -119,7 +119,7 @@ public class FirstSetBuilder {
         }
         s += " }";
 
-        ConsoleDebugColor.outCyan(s);
+        ConsoleDebugColor.outlnCyan(s);
         System.out.println("============");
     }
 }

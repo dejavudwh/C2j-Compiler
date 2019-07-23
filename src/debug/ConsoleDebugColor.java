@@ -13,7 +13,7 @@ public class ConsoleDebugColor {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
-    public static void outBlue(String text) {
+    public static void outlnBlue(String text) {
         if (DEBUG) {
             if (DEBUG) {
                 System.out.println(ANSI_BLUE + text + ANSI_RESET);
@@ -21,46 +21,70 @@ public class ConsoleDebugColor {
         }
     }
 
-    public static void outRed(String text) {
+    public static void outlnRed(String text) {
         if (DEBUG) {
             System.out.println(ANSI_RED + text + ANSI_RED);
         }
     }
 
-    public static void outYellow(String text) {
+    public static void outlnYellow(String text) {
         if (DEBUG) {
             System.out.println(ANSI_YELLOW + text + ANSI_RESET);
         }
     }
 
-    public static void outBlack(String text) {
+    public static void outlnBlack(String text) {
         if (DEBUG) {
             System.out.println(ANSI_BLACK + text + ANSI_RESET);
         }
     }
 
-    public static void outWhite(String text) {
+    public static void outlnWhite(String text) {
         if (DEBUG) {
             System.out.println(ANSI_WHITE + text + ANSI_RESET);
         }
     }
 
-    public static void outGreen(String text) {
+    public static void outlnGreen(String text) {
         if (DEBUG) {
             System.out.println(ANSI_GREEN + text + ANSI_RESET);
         }
     }
 
-    public static void outPurple(String text) {
+    public static void outlnPurple(String text) {
         if (DEBUG) {
             System.out.println(ANSI_PURPLE + text + ANSI_RESET);
         }
     }
 
-    public static void outCyan(String text) {
+    public static void outlnCyan(String text) {
         if (DEBUG) {
             System.out.println(ANSI_CYAN + text + ANSI_RESET);
         }
+    }
+
+    public static void outPurple(String text) {
+        if (DEBUG) {
+            System.out.print(ANSI_PURPLE + text + ANSI_RESET);
+        }
+    }
+
+    public static void outGreen(String text) {
+        if (DEBUG) {
+            System.out.print(ANSI_GREEN + text + ANSI_RESET);
+        }
+    }
+
+    public static void outCyan(String text) {
+        if (DEBUG) {
+            System.out.print(ANSI_CYAN + text + ANSI_RESET);
+        }
+    }
+
+    public static void outBlue(String text) {
+            if (DEBUG) {
+                System.out.print(ANSI_BLUE + text + ANSI_RESET);
+            }
     }
 
 }

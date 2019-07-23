@@ -80,9 +80,7 @@ public class Production {
                     break;
                 }
 
-                if (i == lookAhead.size() - 1) {
-                    firstSet.addAll(this.lookAhead);
-                }
+                firstSet.addAll(this.lookAhead);
             }
         } else {
             firstSet.addAll(lookAhead);
@@ -90,7 +88,68 @@ public class Production {
 
         return firstSet;
     }
-    
+
+    public Production cloneSelf() {
+        Production product = new Production(productionNum, this.left, dotPos, this.right);
+
+        product.lookAhead = new ArrayList<>();
+        product.lookAhead.addAll(this.lookAhead);
+
+        return product;
+    }
+
+    public void addLookAheadSet(ArrayList<Integer> lookAhead) {
+        this.lookAhead = lookAhead;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Production production = (Production) obj;
+
+        return productionEquals(production) && lookAheadSetComparing(production) == 0;
+    }
+
+    public boolean isCover(Production product) {
+        return productionEquals(product) && lookAheadSetComparing(product) > 0;
+    }
+
+    public boolean productionEquals(Production product) {
+        if (this.left != product.getLeft()) {
+            return false;
+        }
+
+        if (!this.right.equals(product.getRight())) {
+            return false;
+        }
+
+        if (this.dotPos != product.getDotPos()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public int lookAheadSetComparing(Production product) {
+        if (this.lookAhead.size() > product.lookAhead.size()) {
+            for (int i = 0; i < product.lookAhead.size(); i++) {
+                if (!this.lookAhead.contains(product.lookAhead.get(i))) {
+                    return -1;
+                }
+            }
+            return 1;
+        } else if (this.lookAhead.size() < product.lookAhead.size()) {
+            return -1;
+        } else if (this.lookAhead.size() == product.lookAhead.size()) {
+            for (int i = 0; i < this.lookAhead.size(); i++) {
+                if (!this.lookAhead.get(i).equals(product.lookAhead.get(i))) {
+                    return -1;
+                }
+            }
+        }
+
+        return 0;
+    }
+
     public void print() {
         ConsoleDebugColor.outBlue(Token.getTokenStr(left) + " -> " );
         boolean printDot = false;
@@ -119,11 +178,11 @@ public class Production {
         for (int i = dotPos + 1; i < right.size(); i++) {
             //System.out.print(SymbolDefine.getSymbolStr(right.get(i)) + " ");
             int val = right.get(i);
-            ConsoleDebugColor.outCyan(Token.values()[val].toString());
+            ConsoleDebugColor.outlnCyan(Token.values()[val].toString());
         }
 
         if (dotPos+1 >= right.size()) {
-            ConsoleDebugColor.outCyan("null");
+            ConsoleDebugColor.outlnCyan("null");
         }
 
         System.out.println();

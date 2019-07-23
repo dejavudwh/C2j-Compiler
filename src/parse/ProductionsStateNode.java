@@ -3,9 +3,9 @@ package parse;
 import debug.ConsoleDebugColor;
 import lexer.Token;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Stack;
 
 /**
@@ -18,7 +18,7 @@ public class ProductionsStateNode {
     /** Automaton state node number */
     private int stateNum;
     /** production of state node */
-    private ArrayList<Production> productions = new ArrayList<>();
+    private ArrayList<Production> productions;
     /** Node generated closures */
     private ArrayList<Production> closureSet = new ArrayList<>();
     /** Finish the closure generation partition */
@@ -59,13 +59,13 @@ public class ProductionsStateNode {
             Production production = productionStack.pop();
 
             if (ConsoleDebugColor.DEBUG) {
-                ConsoleDebugColor.outPurple("production on top of stack is : ");
+                ConsoleDebugColor.outlnPurple("production on top of stack is : ");
                 production.print();
                 production.printBeta();
             }
 
             if (Token.isTerminal(production.getDotSymbol())) {
-                ConsoleDebugColor.outPurple("symbol after dot is not non-terminal, ignore and process next item");
+                ConsoleDebugColor.outlnPurple("symbol after dot is not non-terminal, ignore and process next item");
                 continue;
             }
 
@@ -73,6 +73,45 @@ public class ProductionsStateNode {
             ArrayList<Production> closures = productionManager.getProduction(symbol);
             ArrayList<Integer> lookAhead = production.computeFirstSetOfBetaAndc();
 
+            Iterator<Production> it = closures.iterator();
+            while (it.hasNext()) {
+                Production oldProduct = it.next();
+                Production newProduct = oldProduct.cloneSelf();
+
+                newProduct.addLookAheadSet(lookAhead);
+                if (!closureSet.contains(newProduct)) {
+                    ConsoleDebugColor.outlnPurple("push and add new production to stack and closureSet");
+
+                    closureSet.add(newProduct);
+                    productionStack.push(newProduct);
+                    ConsoleDebugColor.outlnPurple("Add new production:");
+                    newProduct.print();
+                    removeRedundantProduction(newProduct);
+                } else {
+                    ConsoleDebugColor.outlnPurple("the production is already exist!");
+                }
+            }
+
+        }
+    }
+
+    private void removeRedundantProduction(Production product) {
+        boolean removeHappended = true;
+
+        while (removeHappended) {
+            removeHappended = false;
+
+            Iterator it = closureSet.iterator();
+            while (it.hasNext()) {
+                Production item = (Production) it.next();
+                if (product.isCover(item)) {
+                    removeHappended = true;
+                    closureSet.remove(item);
+                    ConsoleDebugColor.outlnPurple("remove redundant production: ");
+                    item.print();
+                    break;
+                }
+            }
         }
     }
 }
