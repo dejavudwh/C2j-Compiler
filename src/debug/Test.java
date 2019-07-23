@@ -18,7 +18,7 @@ public class Test {
         fsb.buildFirstSets();
     }
 
-    private void testMakeClosures() {
+    private void testBuildTransition() {
         ProductionManager pm = ProductionManager.getInstance();
         ArrayList<Production> p = pm.getProduction(0);
         ProductionsStateNode psn = new ProductionsStateNode(p);
@@ -27,6 +27,6 @@ public class Test {
 
     public static void main(String[] args) {
         Test test = new Test();
-        test.testMakeClosures();
+        test.testBuildTransition();
     }
 }

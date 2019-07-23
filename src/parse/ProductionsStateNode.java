@@ -28,10 +28,9 @@ public class ProductionsStateNode {
         this.stateNum = stateNumCount;
         this.productions = productions;
         this.closureSet.addAll(this.productions);
-        increaseStateNum();
     }
 
-    private static void  increaseStateNum() {
+    public static void  increaseStateNum() {
         stateNumCount++;
     }
 
