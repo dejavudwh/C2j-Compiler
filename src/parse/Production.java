@@ -150,42 +150,46 @@ public class Production {
         return 0;
     }
 
-    public void print() {
-        ConsoleDebugColor.outBlue(Token.getTokenStr(left) + " -> " );
-        boolean printDot = false;
-        for (int i = 0; i < right.size(); i++) {
-            if (i == dotPos) {
-                printDot = true;
+    public void debugPrint() {
+        if (ConsoleDebugColor.DEBUG) {
+            ConsoleDebugColor.outBlue(Token.getTokenStr(left) + " -> ");
+            boolean printDot = false;
+            for (int i = 0; i < right.size(); i++) {
+                if (i == dotPos) {
+                    printDot = true;
+                    ConsoleDebugColor.outGreen(".");
+                }
+
+                ConsoleDebugColor.outCyan(Token.getTokenStr(right.get(i)) + " ");
+            }
+
+            if (!printDot) {
                 ConsoleDebugColor.outGreen(".");
             }
 
-            ConsoleDebugColor.outCyan(Token.getTokenStr(right.get(i)) + " ");
+            System.out.print("look ahead set: { ");
+            for (int i = 0; i < lookAhead.size(); i++) {
+                System.out.print(Token.getTokenStr(lookAhead.get(i)) + " ");
+            }
+            System.out.println("}");
         }
-
-        if (!printDot) {
-            ConsoleDebugColor.outGreen(".");
-        }
-
-        System.out.print("look ahead set: { ");
-        for (int i = 0; i < lookAhead.size(); i++) {
-            System.out.print(Token.getTokenStr(lookAhead.get(i)) + " ");
-        }
-        System.out.println("}");
     }
 
-    public void printBeta() {
-        System.out.print("Beta part of production is: ");
-        for (int i = dotPos + 1; i < right.size(); i++) {
-            //System.out.print(SymbolDefine.getSymbolStr(right.get(i)) + " ");
-            int val = right.get(i);
-            ConsoleDebugColor.outlnCyan(Token.values()[val].toString());
-        }
+    public void debugPrintBeta() {
+        if (ConsoleDebugColor.DEBUG) {
+            System.out.print("Beta part of production is: ");
+            for (int i = dotPos + 1; i < right.size(); i++) {
+                //System.out.debugPrint(SymbolDefine.getSymbolStr(right.get(i)) + " ");
+                int val = right.get(i);
+                ConsoleDebugColor.outlnCyan(Token.values()[val].toString());
+            }
 
-        if (dotPos+1 >= right.size()) {
-            ConsoleDebugColor.outlnCyan("null");
-        }
+            if (dotPos + 1 >= right.size()) {
+                ConsoleDebugColor.outlnCyan("null");
+            }
 
-        System.out.println();
+            System.out.println();
+        }
     }
 
 }

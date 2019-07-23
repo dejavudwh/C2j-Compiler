@@ -37,11 +37,10 @@ public class FirstSetBuilder {
             }
         }
 
-        if (ConsoleDebugColor.DEBUG) {
-            ConsoleDebugColor.outlnPurple("First sets :");
-            printAllFirstSet();
-            ConsoleDebugColor.outlnPurple("First sets end");
-        }
+        ConsoleDebugColor.outlnPurple("First sets :");
+        debugPrintAllFirstSet();
+        ConsoleDebugColor.outlnPurple("First sets end");
+
     }
 
     private void addSymbolFirstSet(Symbols symbol) {
@@ -103,11 +102,13 @@ public class FirstSetBuilder {
         return symbol.isNullable;
     }
 
-    private void printAllFirstSet() {
-        Iterator<Symbols> it = symbolArray.iterator();
-        while (it.hasNext()) {
-            Symbols sym = it.next();
-            printFirstSet(sym);
+    private void debugPrintAllFirstSet() {
+        if (ConsoleDebugColor.DEBUG) {
+            Iterator<Symbols> it = symbolArray.iterator();
+            while (it.hasNext()) {
+                Symbols sym = it.next();
+                printFirstSet(sym);
+            }
         }
     }
 

@@ -58,11 +58,9 @@ public class ProductionsStateNode {
         while (!productionStack.isEmpty()) {
             Production production = productionStack.pop();
 
-            if (ConsoleDebugColor.DEBUG) {
-                ConsoleDebugColor.outlnPurple("production on top of stack is : ");
-                production.print();
-                production.printBeta();
-            }
+            ConsoleDebugColor.outlnPurple("production on top of stack is : ");
+            production.debugPrint();
+            production.debugPrintBeta();
 
             if (Token.isTerminal(production.getDotSymbol())) {
                 ConsoleDebugColor.outlnPurple("symbol after dot is not non-terminal, ignore and process next item");
@@ -85,7 +83,7 @@ public class ProductionsStateNode {
                     closureSet.add(newProduct);
                     productionStack.push(newProduct);
                     ConsoleDebugColor.outlnPurple("Add new production:");
-                    newProduct.print();
+                    newProduct.debugPrint();
                     removeRedundantProduction(newProduct);
                 } else {
                     ConsoleDebugColor.outlnPurple("the production is already exist!");
@@ -108,10 +106,17 @@ public class ProductionsStateNode {
                     removeHappended = true;
                     closureSet.remove(item);
                     ConsoleDebugColor.outlnPurple("remove redundant production: ");
-                    item.print();
+                    item.debugPrint();
                     break;
                 }
             }
+        }
+    }
+
+    private void printClosure() {
+        ConsoleDebugColor.outlnPurple("Closure Sets is: ");
+        for (int i = 0; i < closureSet.size(); i++) {
+            closureSet.get(i).debugPrint();
         }
     }
 }
