@@ -1,10 +1,12 @@
 package parse;
 
 import debug.ConsoleDebugColor;
+import lexer.Token;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
@@ -27,6 +29,15 @@ public class StateNodeManager {
         }
 
         return instance;
+    }
+
+    public void buildTransitionStateMachine() {
+        ProductionManager productionManager = ProductionManager.getInstance();
+        ProductionsStateNode state = getStateNode(productionManager.getProduction(Token.PROGRAM.ordinal()));
+
+        state.buildTransition();
+
+        debugPrintStateMap();
     }
 
     public ProductionsStateNode getStateNode(ArrayList<Production> productions) {
@@ -90,4 +101,29 @@ public class StateNodeManager {
         return returnNode;
 
     }
+
+    public void debugPrintStateMap() {
+        if (ConsoleDebugColor.DEBUG) {
+            ConsoleDebugColor.outlnPurple("Map size is: " + transitionMap.size());
+
+            for (Map.Entry<ProductionsStateNode, HashMap<Integer, ProductionsStateNode>> entry : transitionMap.entrySet()) {
+                ProductionsStateNode from = entry.getKey();
+                ConsoleDebugColor.outlnPurple("********Status node information********");
+                ConsoleDebugColor.outlnPurple("from state: ");
+                from.debugPrint();
+
+                HashMap<Integer, ProductionsStateNode> map = entry.getValue();
+                for (Map.Entry<Integer, ProductionsStateNode> item : map.entrySet()) {
+                    int symbol = item.getKey();
+                    ConsoleDebugColor.outlnPurple("on symbol: " + Token.getTokenStr(symbol));
+                    ConsoleDebugColor.outlnPurple("to state: ");
+                    ProductionsStateNode to = item.getValue();
+                    to.debugPrint();
+                }
+
+                ConsoleDebugColor.outlnPurple("********end state machine********");
+            }
+        }
+    }
+
 }

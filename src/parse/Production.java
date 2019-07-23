@@ -105,6 +105,18 @@ public class Production {
         this.lookAhead = lookAhead;
     }
 
+    public boolean canBeReduce() {
+        return dotPos >= right.size();
+    }
+
+    public ArrayList<Integer> getLookAheadSet() {
+        return lookAhead;
+    }
+
+    public int getProductionNum() {
+        return productionNum;
+    }
+
     @Override
     public boolean equals(Object obj) {
         Production production = (Production) obj;

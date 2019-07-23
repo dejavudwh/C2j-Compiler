@@ -200,6 +200,25 @@ public class ProductionsStateNode {
         }
     }
 
+    public HashMap<Integer, Integer> makeReduce() {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        reduce(map, this.productions);
+        reduce(map, this.mergedProduction);
+
+        return map;
+    }
+
+    private void reduce(HashMap<Integer, Integer> map, ArrayList<Production> productions) {
+        for (Production production : productions) {
+            if (production.canBeReduce()) {
+                ArrayList<Integer> lookAhead = production.getLookAheadSet();
+                for (int j = 0; j < lookAhead.size(); j++) {
+                    map.put(lookAhead.get(j), (production.getProductionNum()));
+                }
+            }
+        }
+    }
+
     public void debugPrint() {
         if (ConsoleDebugColor.DEBUG) {
             System.out.println("State Number: " + stateNum);
