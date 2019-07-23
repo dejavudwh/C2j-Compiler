@@ -16,7 +16,7 @@ public class StateNodeManager {
 
     private StateNodeManager() {}
 
-    public StateNodeManager getInstance() {
+    public static StateNodeManager getInstance() {
         if (instance == null) {
             instance = new StateNodeManager();
         }
@@ -42,4 +42,13 @@ public class StateNodeManager {
         return node;
     }
 
+    public void addTransition(ProductionsStateNode from, ProductionsStateNode to, int on) {
+        HashMap<Integer, ProductionsStateNode> map = transitionMap.get(from);
+        if (map == null) {
+            map = new HashMap<>();
+        }
+
+        map.put(on, to);
+        transitionMap.put(from, map);
+    }
 }

@@ -1,9 +1,7 @@
 package debug;
 
-import parse.FirstSetBuilder;
-import parse.Production;
-import parse.ProductionManager;
-import parse.ProductionsStateNode;
+import lexer.Token;
+import parse.*;
 
 import java.util.ArrayList;
 
@@ -20,9 +18,8 @@ public class Test {
 
     private void testBuildTransition() {
         ProductionManager pm = ProductionManager.getInstance();
-        ArrayList<Production> p = pm.getProduction(0);
-        ProductionsStateNode psn = new ProductionsStateNode(p);
-        psn.buildTransition();
+        ProductionsStateNode state = StateNodeManager.getInstance().getStateNode(pm.getProduction(Token.PROGRAM.ordinal()));
+        state.buildTransition();
     }
 
     public static void main(String[] args) {

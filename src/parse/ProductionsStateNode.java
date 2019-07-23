@@ -20,9 +20,12 @@ public class ProductionsStateNode {
     private ArrayList<Production> closureSet = new ArrayList<>();
     /** Finish the closure generation partition */
     private HashMap<Integer, ArrayList<Production>> partition = new HashMap<>();
+    private HashMap<Integer, ProductionsStateNode> transition = new HashMap<Integer, ProductionsStateNode>();
+
     private boolean transitionDone = false;
 
     private ProductionManager productionManager = ProductionManager.getInstance();
+    private StateNodeManager stateNodeManager = StateNodeManager.getInstance();
 
     public ProductionsStateNode(ArrayList<Production> productions) {
         this.stateNum = stateNumCount;
@@ -43,9 +46,12 @@ public class ProductionsStateNode {
         /** Closure of a node's production */
         makeClosure();
         partition();
+        makeTransition();
     }
 
     private void makeClosure() {
+        ConsoleDebugColor.outlnPurple("==== state begin make closure sets ====");
+
         Stack<Production> productionStack = new Stack<>();
         for (Production production : productions) {
             productionStack.push(production);
@@ -88,6 +94,7 @@ public class ProductionsStateNode {
         }
 
         debugPrintClosure();
+        ConsoleDebugColor.outlnPurple("==== make closure sets end ====");
     }
 
     private void removeRedundantProduction(Production product) {
@@ -111,19 +118,86 @@ public class ProductionsStateNode {
     }
 
     private void partition() {
+        ConsoleDebugColor.outlnPurple("==== state begin make partition ====");
+
         for (Production production : closureSet) {
             int symbol = production.getDotSymbol();
             if (symbol == Token.UNKNOWN_TOKEN.ordinal()) {
                 continue;
             }
 
-            ArrayList<Production> productions = partition.computeIfAbsent(symbol, k -> new ArrayList<>());
-            if (!productions.contains(production)) {
-                productions.add(production);
+            ArrayList<Production> productionList = partition.get(symbol);
+            if (productionList == null) {
+                productionList = new ArrayList<>();
+                partition.put(production.getDotSymbol(), productionList);
+            }
+
+            if (!productionList.contains(production)) {
+                productionList.add(production);
             }
         }
 
         debugPrintPartition();
+        ConsoleDebugColor.outlnPurple("==== make partition end ====");
+    }
+
+    private void makeTransition() {
+        for (Map.Entry<Integer, ArrayList<Production>> entry : partition.entrySet()) {
+            ProductionsStateNode nextState = makeNextStateNode(entry.getKey());
+            ConsoleDebugColor.outlnPurple("==== begin make transition info ====");
+
+            transition.put(entry.getKey(), nextState);
+
+            ConsoleDebugColor.outlnPurple("from state " + stateNum + " to State " + nextState.stateNum + " on " +
+            Token.getTokenStr(entry.getKey()));
+
+            ConsoleDebugColor.outlnPurple("==== State " + nextState.stateNum + "====");
+            nextState.debugPrint();
+
+            stateNodeManager.addTransition(this, nextState, entry.getKey());
+        }
+
+        debugPrintTransition();
+
+        extendFollowingTransition();
+    }
+
+    private ProductionsStateNode makeNextStateNode(int left) {
+        ArrayList<Production> productions = partition.get(left);
+        ArrayList<Production> newProductions = new ArrayList<>();
+
+        for (int i = 0; i < productions.size(); i++) {
+            Production production = productions.get(i);
+            newProductions.add(production.dotForward());
+        }
+
+        return stateNodeManager.getStateNode(newProductions);
+    }
+
+    private void extendFollowingTransition() {
+        for (Map.Entry<Integer, ProductionsStateNode> entry : transition.entrySet()) {
+            ProductionsStateNode state = entry.getValue();
+            if (!state.isTransitionDone()) {
+                state.buildTransition();
+            }
+        }
+    }
+
+    public boolean isTransitionDone() {
+        return transitionDone;
+    }
+
+    public void debugPrint() {
+        if (ConsoleDebugColor.DEBUG) {
+            System.out.println("State Number: " + stateNum);
+            for (int i = 0; i < productions.size(); i++) {
+                productions.get(i).debugPrint();
+            }
+
+    //        for (int i = 0; i < mergedProduction.size(); i++) {
+    //            mergedProduction.get(i).print();
+    //        }
+        }
     }
 
     private void debugPrintClosure() {
@@ -144,4 +218,48 @@ public class ProductionsStateNode {
             }
         }
     }
+
+    public void debugPrintTransition() {
+        if (ConsoleDebugColor.DEBUG) {
+            for (Map.Entry<Integer, ProductionsStateNode> entry : transition.entrySet()) {
+                ConsoleDebugColor.outlnPurple("transfer on " + Token.getTokenStr(entry.getKey()) + " to state ");
+                entry.getValue().debugPrint();
+                System.out.print("\n");
+            }
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return checkProductionEqual(obj, false);
+    }
+
+    public boolean checkProductionEqual(Object obj, boolean isPartial) {
+        ProductionsStateNode node = (ProductionsStateNode) obj;
+
+        if (node.productions.size() != this.productions.size()) {
+            return false;
+        }
+
+        int equalCount = 0;
+
+        for (int i = 0; i < node.productions.size(); i++) {
+            for (int j = 0; j < this.productions.size(); j++) {
+                if (!isPartial) {
+                    if (node.productions.get(i).equals(this.productions.get(j))) {
+                        equalCount++;
+                        break;
+                    }
+                } else {
+                    if (node.productions.get(i).productionEquals(this.productions.get(j))) {
+                        equalCount++;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return equalCount == node.productions.size();
+    }
+
 }

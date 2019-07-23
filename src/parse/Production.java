@@ -34,7 +34,7 @@ public class Production {
         product.lookAhead = new ArrayList<>();
         product.lookAhead.addAll(this.lookAhead);
 
-        return  product;
+        return product;
     }
 
     public int getLeft() {
@@ -80,8 +80,10 @@ public class Production {
                     break;
                 }
 
-                firstSet.addAll(this.lookAhead);
-            }
+                if (i == lookAhead.size() - 1) {
+                    //beta is composed by nulleable terms
+                    firstSet.addAll(this.lookAhead);
+                }            }
         } else {
             firstSet.addAll(lookAhead);
         }
@@ -179,13 +181,12 @@ public class Production {
         if (ConsoleDebugColor.DEBUG) {
             System.out.print("Beta part of production is: ");
             for (int i = dotPos + 1; i < right.size(); i++) {
-                //System.out.debugPrint(SymbolDefine.getSymbolStr(right.get(i)) + " ");
                 int val = right.get(i);
-                ConsoleDebugColor.outlnCyan(Token.values()[val].toString());
+                ConsoleDebugColor.outCyan(Token.values()[val].toString());
             }
 
             if (dotPos + 1 >= right.size()) {
-                ConsoleDebugColor.outlnCyan("null");
+                ConsoleDebugColor.outCyan("null");
             }
 
             System.out.println();
