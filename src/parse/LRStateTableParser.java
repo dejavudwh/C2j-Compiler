@@ -89,7 +89,10 @@ public class LRStateTableParser {
     }
 
     private void takeActionForReduce(int productionNum) {
-
+        switch (productionNum) {
+            default:
+                break;
+        }
     }
 
 }
