@@ -19,6 +19,7 @@ public class Lexer {
 
     private static char BLANK = ' ';
     private static char NEWLINE = '\n';
+    private static char NULLCHAR = '\0';
 
     private Input input = new Input();
     private String current = "";
@@ -35,9 +36,13 @@ public class Lexer {
                 boolean flag = false;
                 while (true) {
                     char c = (char) input.inputAdvance();
-                    if ((c == BLANK && !flag) || c == NEWLINE) {
+                    if ((c == BLANK && !flag) || c == NEWLINE || c == NULLCHAR) {
                         if (c == NEWLINE) {
                             lineno++;
+                        }
+                        System.out.println("read: " + (int)c);
+                        if (c == BLANK && current.isEmpty()) {
+                            continue;
                         }
                         break;
                     } else {
@@ -45,6 +50,7 @@ public class Lexer {
                             flag = !flag;
                         }
                         current += c;
+                        System.out.println("read: " + (int)c);
                     }
                 }
 

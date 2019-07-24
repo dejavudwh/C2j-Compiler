@@ -3,6 +3,10 @@ package parse;
 import debug.ConsoleDebugColor;
 import lexer.Token;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.rmi.server.ExportException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,7 +26,8 @@ public class StateNodeManager {
     private HashMap<ProductionsStateNode, HashMap<Integer, ProductionsStateNode>> transitionMap = new HashMap<>();
     private HashMap<Integer, HashMap<Integer, Integer>> lrStateTable = new HashMap<>();
 
-    private StateNodeManager() {}
+    private StateNodeManager() {
+    }
 
     public static StateNodeManager getInstance() {
         if (instance == null) {
@@ -63,7 +68,7 @@ public class StateNodeManager {
         /* Compress the finite state machine nodes */
         if (isTransitionTableCompressed) {
             from = getAndMergeSimilarStates(from);
-            to   = getAndMergeSimilarStates(to);
+            to = getAndMergeSimilarStates(to);
         }
 
         HashMap<Integer, ProductionsStateNode> map = transitionMap.get(from);
@@ -86,8 +91,7 @@ public class StateNodeManager {
                 if (currentNode.stateNum < node.stateNum) {
                     currentNode.stateMerge(node);
                     returnNode = currentNode;
-                }
-                else {
+                } else {
                     node.stateMerge(currentNode);
                     returnNode = node;
                 }
@@ -95,7 +99,7 @@ public class StateNodeManager {
             }
         }
 
-        if (compressedStateList.contains(returnNode)) {
+        if (!compressedStateList.contains(returnNode)) {
             compressedStateList.add(returnNode);
         }
 
@@ -103,8 +107,8 @@ public class StateNodeManager {
 
     }
 
-    private HashMap<Integer, HashMap<Integer, Integer>> getLrStateTable() {
-        Iterator<ProductionsStateNode> it = null;
+    public HashMap<Integer, HashMap<Integer, Integer>> getLrStateTable() {
+        Iterator it;
         if (isTransitionTableCompressed) {
             it = compressedStateList.iterator();
         } else {
@@ -112,23 +116,25 @@ public class StateNodeManager {
         }
 
         while (it.hasNext()) {
-            ProductionsStateNode node = it.next();
-            HashMap<Integer, ProductionsStateNode> map = transitionMap.get(node);
+            ProductionsStateNode state = (ProductionsStateNode) it.next();
+            HashMap<Integer, ProductionsStateNode> map = transitionMap.get(state);
             HashMap<Integer, Integer> jump = new HashMap<>();
 
-            if (map != null){
+            if (map != null) {
                 for (Map.Entry<Integer, ProductionsStateNode> item : map.entrySet()) {
                     jump.put(item.getKey(), item.getValue().stateNum);
                 }
             }
-            HashMap<Integer, Integer> reduceMap = node.makeReduce();
+
+            HashMap<Integer, Integer> reduceMap = state.makeReduce();
             if (reduceMap.size() > 0) {
                 for (Map.Entry<Integer, Integer> item : reduceMap.entrySet()) {
+
                     jump.put(item.getKey(), -(item.getValue()));
                 }
             }
 
-            lrStateTable.put(node.stateNum, jump);
+            lrStateTable.put(state.stateNum, jump);
         }
 
         return lrStateTable;

@@ -2,6 +2,7 @@ package parse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -39,4 +40,19 @@ public class ProductionManager {
     public ArrayList<Production> getProduction(int symbol) {
         return productionMap.get(symbol);
     }
+
+    public Production getProductionByIndex(int index) {
+
+        for (Map.Entry<Integer, ArrayList<Production>> item : productionMap.entrySet()) {
+            ArrayList<Production> productionList = item.getValue();
+            for (int i = 0; i < productionList.size(); i++) {
+                if (productionList.get(i).getProductionNum() == index) {
+                    return productionList.get(i);
+                }
+            }
+        }
+
+        return null;
+    }
+
 }

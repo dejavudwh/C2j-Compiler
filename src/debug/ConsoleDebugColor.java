@@ -1,7 +1,7 @@
 package debug;
 
 public class ConsoleDebugColor {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";

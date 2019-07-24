@@ -1,10 +1,8 @@
 package debug;
 
-import lexer.Token;
+import lexer.Lexer;
 import parse.*;
 
-import javax.swing.plaf.nimbus.State;
-import java.util.ArrayList;
 
 /**
  *
@@ -19,11 +17,19 @@ public class Test {
 
     private void buildTransitionStateMachine() {
         StateNodeManager snm = StateNodeManager.getInstance();
-        snm.buildTransitionStateMachine();
+//        snm.buildTransitionStateMachine();
     }
 
-    public static void main(String[] args) {
+    private void testParse() throws Exception {
+        ProductionManager pm = ProductionManager.getInstance();
+        StateNodeManager snm = StateNodeManager.getInstance();
+        snm.buildTransitionStateMachine();
+        LRStateTableParser lrtp = new LRStateTableParser(new Lexer());
+        lrtp.parse();
+    }
+
+    public static void main(String[] args) throws Exception {
         Test test = new Test();
-        test.buildTransitionStateMachine();
+        test.testParse();
     }
 }

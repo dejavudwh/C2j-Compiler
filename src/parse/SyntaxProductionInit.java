@@ -43,6 +43,10 @@ public class SyntaxProductionInit {
     }
 
     private void initVariableDeclaration() {
+
+        productionMap.clear();
+
+
         /*LB: { RB:}
          *
          * C variable declaration grammar
@@ -50,7 +54,7 @@ public class SyntaxProductionInit {
          *
          *  EXT_DEF_LIST -> EXT_DEF_LIST EXT_DEF
          *
-         *  EXT_DEF -> OPT_SPECIFIERS EXT_DECL_LIST SEMI
+         *  EXT_DEF -> OPT_SPECIFIERS EXT_DECL_LIST  SEMI
          *             | OPT_SPECIFIERS SEMI
          *
          *
@@ -82,12 +86,15 @@ public class SyntaxProductionInit {
          *              | START VAR_DECL
          *
          */
+
+
         //PROGRAM -> EXT_DEF_LIST
-        ArrayList<Integer> right;
-        right = getProductionRight(new int[]{Token.EXT_DEF_LIST.ordinal()});
-        Production production = new Production(productionNum, Token.PROGRAM.ordinal(), 0, right);
+        ArrayList<Integer> right = null;
+        right = getProductionRight( new int[]{Token.EXT_DEF_LIST.ordinal() });
+        Production production = new Production(productionNum,Token.PROGRAM.ordinal(), 0, right);
         productionNum++;
         addProduction(production, true);
+
 
         //EXT_DEF_LIST -> EXT_DEF_LIST EXT_DEF
         right = getProductionRight(new int[]{Token.EXT_DEF_LIST.ordinal(), Token.EXT_DEF.ordinal()});
@@ -95,17 +102,24 @@ public class SyntaxProductionInit {
         productionNum++;
         addProduction(production, true);
 
+
+
         //EXT_DEF -> OPT_SPECIFIERS EXT_DECL_LIST  SEMI
         right = getProductionRight(new int[]{Token.OPT_SPECIFIERS.ordinal(), Token.EXT_DECL_LIST.ordinal(), Token.SEMI.ordinal()});
         production = new Production(productionNum, Token.EXT_DEF.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
+
+
+
         //EXT_DEF -> OPT_SPECIFIERS  SEMI
-        right = getProductionRight(new int[]{Token.OPT_SPECIFIERS.ordinal(), Token.SEMI.ordinal()});
+        right = getProductionRight(new int[]{Token.OPT_SPECIFIERS.ordinal(),  Token.SEMI.ordinal()});
         production = new Production(productionNum, Token.EXT_DEF.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
+
+
 
         //EXT_DECL_LIST ->   EXT_DECL
         right = getProductionRight(new int[]{Token.EXT_DECL.ordinal()});
@@ -121,57 +135,64 @@ public class SyntaxProductionInit {
 
         //EXT_DECL -> VAR_DECL
         right = getProductionRight(new int[]{Token.VAR_DECL.ordinal()});
-        production = new Production(productionNum, Token.EXT_DECL.ordinal(), 0, right);
+        production = new Production(productionNum,Token.EXT_DECL.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
         //OPT_SPECIFIERS -> SPECIFIERS
         right = getProductionRight(new int[]{Token.SPECIFIERS.ordinal()});
-        production = new Production(productionNum, Token.OPT_SPECIFIERS.ordinal(), 0, right);
+        production = new Production(productionNum,Token.OPT_SPECIFIERS.ordinal(), 0, right);
         productionNum++;
         addProduction(production, true);
 
         //SPECIFIERS -> TYPE_OR_CLASS
         right = getProductionRight(new int[]{Token.TYPE_OR_CLASS.ordinal()});
-        production = new Production(productionNum, Token.SPECIFIERS.ordinal(), 0, right);
+        production = new Production(productionNum,Token.SPECIFIERS.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
         //SPECIFIERS -> SPECIFIERS TYPE_OR_CLASS
         right = getProductionRight(new int[]{Token.SPECIFIERS.ordinal(), Token.TYPE_OR_CLASS.ordinal()});
-        production = new Production(productionNum, Token.SPECIFIERS.ordinal(), 0, right);
+        production = new Production(productionNum,Token.SPECIFIERS.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
+
+
 
         //TYPE_OR_CLASS -> TYPE_SPECIFIER
         right = getProductionRight(new int[]{Token.TYPE_SPECIFIER.ordinal()});
-        production = new Production(productionNum, Token.TYPE_OR_CLASS.ordinal(), 0, right);
+        production = new Production(productionNum,Token.TYPE_OR_CLASS.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
+
+
         //TYPE_SPECIFIER ->  TYPE
         right = getProductionRight(new int[]{Token.TYPE.ordinal()});
-        production = new Production(productionNum, Token.TYPE_SPECIFIER.ordinal(), 0, right);
+        production = new Production(productionNum,Token.TYPE_SPECIFIER.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
         //NEW_NAME -> NAME
         right = getProductionRight(new int[]{Token.NAME.ordinal()});
-        production = new Production(productionNum, Token.NEW_NAME.ordinal(), 0, right);
+        production = new Production(productionNum,Token.NEW_NAME.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
+
 
         //VAR_DECL ->  NEW_NAME(13)
         right = getProductionRight(new int[]{Token.NEW_NAME.ordinal()});
-        production = new Production(productionNum, Token.VAR_DECL.ordinal(), 0, right);
+        production = new Production(productionNum,Token.VAR_DECL.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
+
         ///VAR_DECL ->START VAR_DECL
         right = getProductionRight(new int[]{Token.STAR.ordinal(), Token.VAR_DECL.ordinal()});
-        production = new Production(productionNum, Token.VAR_DECL.ordinal(), 0, right);
+        production = new Production(productionNum,Token.VAR_DECL.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
+
 
     }
 
@@ -192,62 +213,62 @@ public class SyntaxProductionInit {
 
         //EXT_DEF -> OPT_SPECIFIERS FUNCT_DECL SEMI(15)
         ArrayList<Integer> right = null;
-        right = getProductionRight(new int[]{Token.OPT_SPECIFIERS.ordinal(), Token.FUNCT_DECL.ordinal(),
+        right = getProductionRight( new int[]{Token.OPT_SPECIFIERS.ordinal(), Token.FUNCT_DECL.ordinal(),
                 Token.SEMI.ordinal()});
-        Production production = new Production(productionNum, Token.EXT_DEF.ordinal(), 0, right);
+        Production production = new Production(productionNum,Token.EXT_DEF.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
 
         //FUNCT_DECL -> NEW_NAME LP VAR_LIST RP(16)
         right = null;
-        right = getProductionRight(new int[]{Token.NEW_NAME.ordinal(), Token.LP.ordinal(),
-                Token.VAR_LIST.ordinal(), Token.RP.ordinal()});
-        production = new Production(productionNum, Token.FUNCT_DECL.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.NEW_NAME.ordinal(), Token.LP.ordinal(),
+                Token.VAR_LIST.ordinal(), Token.RP.ordinal() });
+        production = new Production(productionNum,Token.FUNCT_DECL.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
         //FUNCT_DECL ->  NEW_NAME LP RP(17)
         right = null;
-        right = getProductionRight(new int[]{Token.NEW_NAME.ordinal(), Token.LP.ordinal(), Token.RP.ordinal()});
-        production = new Production(productionNum, Token.FUNCT_DECL.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.NEW_NAME.ordinal(),Token.LP.ordinal(), Token.RP.ordinal()});
+        production = new Production(productionNum,Token.FUNCT_DECL.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
 
         //VAR_LIST ->  PARAM_DECLARATION
         right = null;
-        right = getProductionRight(new int[]{Token.PARAM_DECLARATION.ordinal()});
-        production = new Production(productionNum, Token.VAR_LIST.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.PARAM_DECLARATION.ordinal()});
+        production = new Production(productionNum,Token.VAR_LIST.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
         //VAR_LIST -> VAR_LIST COMMA PARAM_DECLARATION
         right = null;
-        right = getProductionRight(new int[]{Token.VAR_LIST.ordinal(), Token.COMMA.ordinal(),
-                Token.PARAM_DECLARATION.ordinal()});
-        production = new Production(productionNum, Token.VAR_LIST.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.VAR_LIST.ordinal(), Token.COMMA.ordinal(),
+                Token.PARAM_DECLARATION.ordinal() });
+        production = new Production(productionNum,Token.VAR_LIST.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
         //PARAM_DECLARATION -> TYPE_NT VAR_DECL
         right = null;
-        right = getProductionRight(new int[]{Token.TYPE_NT.ordinal(), Token.VAR_DECL.ordinal()});
-        production = new Production(productionNum, Token.PARAM_DECLARATION.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.TYPE_NT.ordinal(), Token.VAR_DECL.ordinal() });
+        production = new Production(productionNum,Token.PARAM_DECLARATION.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
         //TYPE_NT -> TYPE_SPECIFIER
         right = null;
-        right = getProductionRight(new int[]{Token.TYPE_SPECIFIER.ordinal()});
-        production = new Production(productionNum, Token.TYPE_NT.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.TYPE_SPECIFIER.ordinal() });
+        production = new Production(productionNum,Token.TYPE_NT.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
         //TYPE_NT -> TYPE TYPE_SPECIFIER
         right = null;
-        right = getProductionRight(new int[]{Token.TYPE.ordinal(), Token.TYPE_SPECIFIER.ordinal()});
-        production = new Production(productionNum, Token.TYPE_NT.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.TYPE.ordinal(), Token.TYPE_SPECIFIER.ordinal() });
+        production = new Production(productionNum,Token.TYPE_NT.ordinal(), 0, right);
         productionNum++;
         addProduction(production, false);
 
@@ -288,113 +309,114 @@ public class SyntaxProductionInit {
 
         //TYPE_SPECIFIER -> STRUCT_SPECIFIER  (23)
         ArrayList<Integer> right = null;
-        right = getProductionRight(new int[]{Token.STRUCT_SPECIFIER.ordinal()});
-        Production production = new Production(productionNum, Token.TYPE_SPECIFIER.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.STRUCT_SPECIFIER.ordinal()});
+        Production production = new Production(productionNum,Token.TYPE_SPECIFIER.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
         //STTUCT_SPECIFIER -> STRUCT OPT_TAG LC DEF_LIST RC (24)
-        right = getProductionRight(new int[]{Token.STRUCT.ordinal(), Token.OPT_TAG.ordinal(),
+        right = getProductionRight( new int[]{Token.STRUCT.ordinal(), Token.OPT_TAG.ordinal(),
                 Token.LC.ordinal(), Token.DEF_LIST.ordinal(), Token.RC.ordinal()});
-        production = new Production(productionNum, Token.STRUCT_SPECIFIER.ordinal(), 0, right);
+        production = new Production(productionNum,Token.STRUCT_SPECIFIER.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
         //STRUCT_SPECIFIER -> STRUCT TAG (25)
-        right = getProductionRight(new int[]{Token.STRUCT.ordinal(), Token.TAG.ordinal()});
-        production = new Production(productionNum, Token.STRUCT_SPECIFIER.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.STRUCT.ordinal(),Token.TAG.ordinal()});
+        production = new Production(productionNum,Token.STRUCT_SPECIFIER.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
         //OPT_TAG -> TAG (26)
-        right = getProductionRight(new int[]{Token.TAG.ordinal()});
-        production = new Production(productionNum, Token.OPT_TAG.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.TAG.ordinal()});
+        production = new Production(productionNum,Token.OPT_TAG.ordinal(),0, right);
         productionNum++;
         addProduction(production, true);
 
         //TAG -> NAME (27)
-        right = getProductionRight(new int[]{Token.NAME.ordinal()});
-        production = new Production(productionNum, Token.TAG.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.NAME.ordinal()});
+        production = new Production(productionNum,Token.TAG.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
         //DEF_LIST ->  DEF (28)
-        right = getProductionRight(new int[]{Token.DEF.ordinal()});
-        production = new Production(productionNum, Token.DEF_LIST.ordinal(), 0, right);
+        right = getProductionRight( new int[]{ Token.DEF.ordinal()});
+        production = new Production(productionNum,Token.DEF_LIST.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
         //DEF_LIST -> DEF_LIST DEF (29)
-        right = getProductionRight(new int[]{Token.DEF_LIST.ordinal(), Token.DEF.ordinal()});
-        production = new Production(productionNum, Token.DEF_LIST.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.DEF_LIST.ordinal(), Token.DEF.ordinal()});
+        production = new Production(productionNum,Token.DEF_LIST.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
 
         //DEF -> SPECIFIERS DECL_LIST SEMI (30)
-        right = getProductionRight(new int[]{Token.SPECIFIERS.ordinal(), Token.DECL_LIST.ordinal(),
+        right = getProductionRight( new int[]{Token.SPECIFIERS.ordinal(), Token.DECL_LIST.ordinal(),
                 Token.SEMI.ordinal()});
-        production = new Production(productionNum, Token.DEF.ordinal(), 0, right);
+        production = new Production(productionNum,Token.DEF.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
 
         //DEF -> SPECIFIERS SEMI (31)
-        right = getProductionRight(new int[]{Token.SPECIFIERS.ordinal(), Token.SEMI.ordinal()});
-        production = new Production(productionNum, Token.DEF.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.SPECIFIERS.ordinal(), Token.SEMI.ordinal()});
+        production = new Production(productionNum,Token.DEF.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
 
+
         //DECL_LIST -> DECL (32)
-        right = getProductionRight(new int[]{Token.DECL.ordinal()});
-        production = new Production(productionNum, Token.DECL_LIST.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.DECL.ordinal()});
+        production = new Production(productionNum,Token.DECL_LIST.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
         //DECL_LIST -> DECL_LIST COMMA DECL (33)
-        right = getProductionRight(new int[]{Token.DECL_LIST.ordinal(), Token.COMMA.ordinal(),
+        right = getProductionRight( new int[]{Token.DECL_LIST.ordinal(), Token.COMMA.ordinal(),
                 Token.DECL.ordinal()});
-        production = new Production(productionNum, Token.DECL_LIST.ordinal(), 0, right);
+        production = new Production(productionNum,Token.DECL_LIST.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
         //DECL -> VAR_DECL (34)
-        right = getProductionRight(new int[]{Token.VAR_DECL.ordinal()});
-        production = new Production(productionNum, Token.DECL.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.VAR_DECL.ordinal()});
+        production = new Production(productionNum,Token.DECL.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
         //VAR_DECL -> NEW_NAME (35)
-        right = getProductionRight(new int[]{Token.NEW_NAME.ordinal()});
-        production = new Production(productionNum, Token.VAR_DECL.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.NEW_NAME.ordinal()});
+        production = new Production(productionNum,Token.VAR_DECL.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
         //VAR_DECL -> VAR_DECL LP RP (36)
-        right = getProductionRight(new int[]{Token.VAR_DECL.ordinal(), Token.LP.ordinal(),
+        right = getProductionRight( new int[]{Token.VAR_DECL.ordinal(), Token.LP.ordinal(),
                 Token.RP.ordinal()});
-        production = new Production(productionNum, Token.VAR_DECL.ordinal(), 0, right);
+        production = new Production(productionNum,Token.VAR_DECL.ordinal(),0, right);
         productionNum++;
         // addProduction(production, false);
 
         //VAR_DECL -> VAR_DECL LP VAR_LIS RP (37)
-        right = getProductionRight(new int[]{Token.VAR_DECL.ordinal(), Token.LP.ordinal(),
-                Token.VAR_LIST.ordinal(), Token.RP.ordinal()});
-        production = new Production(productionNum, Token.VAR_DECL.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.VAR_DECL.ordinal(), Token.LP.ordinal(),
+                Token.VAR_LIST.ordinal(),Token.RP.ordinal()});
+        production = new Production(productionNum,Token.VAR_DECL.ordinal(),0, right);
         productionNum++;
         // addProduction(production, false);
 
         //VAR_DECL -> LP VAR_DECL RP (38)
-        right = getProductionRight(new int[]{Token.LP.ordinal(), Token.VAR_DECL.ordinal(),
+        right = getProductionRight( new int[]{Token.LP.ordinal(), Token.VAR_DECL.ordinal(),
                 Token.RP.ordinal()});
-        production = new Production(productionNum, Token.VAR_DECL.ordinal(), 0, right);
+        production = new Production(productionNum,Token.VAR_DECL.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
 
         //VAR_DECL -> STAR VAR_DECL (39)
-        right = getProductionRight(new int[]{Token.STAR.ordinal(), Token.VAR_DECL.ordinal()});
-        production = new Production(productionNum, Token.VAR_DECL.ordinal(), 0, right);
+        right = getProductionRight( new int[]{Token.STAR.ordinal(), Token.VAR_DECL.ordinal()});
+        production = new Production(productionNum,Token.VAR_DECL.ordinal(),0, right);
         productionNum++;
         addProduction(production, false);
     }

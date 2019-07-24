@@ -15,8 +15,8 @@ public class ProductionsStateNode {
     /** Automaton state node number */
     public int stateNum;
     /** production of state node */
-    private ArrayList<Production> productions;
-    private ArrayList<Production> mergedProduction;
+    public ArrayList<Production> productions;
+    public ArrayList<Production> mergedProduction = new ArrayList<>();
     /** Node generated closures */
     private ArrayList<Production> closureSet = new ArrayList<>();
     /** Finish the closure generation partition */
@@ -81,12 +81,12 @@ public class ProductionsStateNode {
 
                 newProduct.addLookAheadSet(lookAhead);
                 if (!closureSet.contains(newProduct)) {
-                    ConsoleDebugColor.outlnPurple("push and add new production to stack and closureSet");
+//                    ConsoleDebugColor.outlnPurple("push and add new production to stack and closureSet");
 
                     closureSet.add(newProduct);
                     productionStack.push(newProduct);
-                    ConsoleDebugColor.outlnPurple("Add new production:");
-                    newProduct.debugPrint();
+//                    ConsoleDebugColor.outlnPurple("Add new production:");
+//                    newProduct.debugPrint();
                     removeRedundantProduction(newProduct);
                 } else {
                     ConsoleDebugColor.outlnPurple("the production is already exist!");
@@ -110,8 +110,8 @@ public class ProductionsStateNode {
                 if (product.isCover(item)) {
                     removeHappended = true;
                     closureSet.remove(item);
-                    ConsoleDebugColor.outlnPurple("remove redundant production: ");
-                    item.debugPrint();
+//                    ConsoleDebugColor.outlnPurple("remove redundant production: ");
+//                    item.debugPrint();
                     break;
                 }
             }
@@ -138,8 +138,8 @@ public class ProductionsStateNode {
             }
         }
 
-        debugPrintPartition();
-        ConsoleDebugColor.outlnPurple("==== make partition end ====");
+//        debugPrintPartition();
+//        ConsoleDebugColor.outlnPurple("==== make partition end ====");
     }
 
     private void makeTransition() {
@@ -158,7 +158,7 @@ public class ProductionsStateNode {
             stateNodeManager.addTransition(this, nextState, entry.getKey());
         }
 
-        debugPrintTransition();
+//        debugPrintTransition();
 
         extendFollowingTransition();
     }
@@ -189,10 +189,10 @@ public class ProductionsStateNode {
     }
 
     public void stateMerge(ProductionsStateNode node) {
-        if (this.productions.contains(node.productions)) {
+        if (!this.productions.contains(node.productions)) {
             for (int i = 0; i < node.productions.size(); i++) {
-                if (this.productions.contains(node.productions.get(i))
-                        && mergedProduction.contains(node.productions.get(i))
+                if (!this.productions.contains(node.productions.get(i))
+                        && !mergedProduction.contains(node.productions.get(i))
                 ) {
                     mergedProduction.add(node.productions.get(i));
                 }
@@ -209,11 +209,11 @@ public class ProductionsStateNode {
     }
 
     private void reduce(HashMap<Integer, Integer> map, ArrayList<Production> productions) {
-        for (Production production : productions) {
-            if (production.canBeReduce()) {
-                ArrayList<Integer> lookAhead = production.getLookAheadSet();
+        for (int i = 0; i < productions.size(); i++) {
+            if (productions.get(i).canBeReduce()) {
+                ArrayList<Integer> lookAhead = productions.get(i).getLookAheadSet();
                 for (int j = 0; j < lookAhead.size(); j++) {
-                    map.put(lookAhead.get(j), (production.getProductionNum()));
+                    map.put(lookAhead.get(j), (productions.get(i).getProductionNum()));
                 }
             }
         }
@@ -226,9 +226,9 @@ public class ProductionsStateNode {
                 productions.get(i).debugPrint();
             }
 
-    //        for (int i = 0; i < mergedProduction.size(); i++) {
-    //            mergedProduction.get(i).print();
-    //        }
+            for (int i = 0; i < mergedProduction.size(); i++) {
+                mergedProduction.get(i).debugPrint();
+            }
         }
     }
 
