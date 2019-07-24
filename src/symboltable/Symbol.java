@@ -2,6 +2,7 @@ package symboltable;
 
 /**
  * Symbolic representation
+ *
  * @author dejavudwh isHudw
  */
 

@@ -4,16 +4,17 @@ import java.util.HashMap;
 
 /**
  * A modifier for a symbol array/pointer/func
+ *
  * @author dejavdwh isHudw
  */
 
 public class Declarator {
-    public static int  POINTER = 0;
-    public static int  ARRAY = 1;
-    public static int  FUNCTION = 2;
+    public static int POINTER = 0;
+    public static int ARRAY = 1;
+    public static int FUNCTION = 2;
 
-    private int  declareType;
-    private int  numberOfElements = 0;
+    private int declareType;
+    private int numberOfElements = 0;
 
     HashMap<Integer, Object> elements = null;
 
@@ -22,7 +23,7 @@ public class Declarator {
     }
 
     public int getType() {
-        return declareType ;
+        return declareType;
     }
 
     public int getElementNum() {
