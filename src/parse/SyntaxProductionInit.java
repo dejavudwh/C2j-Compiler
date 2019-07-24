@@ -956,7 +956,7 @@ public class SyntaxProductionInit {
     }
 
     private void addSymbolMapAndArray(Production production, boolean nullable) {
-        //add symbol array and symbol map
+        //add Symbol array and Symbol map
         int[] right = new int[production.getRight().size()];
         for (int i = 0; i < right.length; i++) {
             right[i] = production.getRight().get(i);

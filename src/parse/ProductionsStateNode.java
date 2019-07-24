@@ -66,7 +66,7 @@ public class ProductionsStateNode {
             production.debugPrintBeta();
 
             if (Token.isTerminal(production.getDotSymbol())) {
-                ConsoleDebugColor.outlnPurple("symbol after dot is not non-terminal, ignore and process next item");
+                ConsoleDebugColor.outlnPurple("Symbol after dot is not non-terminal, ignore and process next item");
                 continue;
             }
 
@@ -242,7 +242,7 @@ public class ProductionsStateNode {
     private void debugPrintPartition() {
         for(Map.Entry<Integer, ArrayList<Production>> entry : partition.entrySet()) {
 
-            ConsoleDebugColor.outlnPurple("partition for symbol: " + Token.getTokenStr(entry.getKey()));
+            ConsoleDebugColor.outlnPurple("partition for Symbol: " + Token.getTokenStr(entry.getKey()));
 
             ArrayList<Production> productionList = entry.getValue();
             for (int i = 0; i < productionList.size(); i++) {

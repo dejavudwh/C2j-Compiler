@@ -1,6 +1,8 @@
 void f(int x, short y, long z);
 
 void f(int x, short y, long z) {
+    enum e {a , b, c};
+
     struct TAG {
         int v1;
         int v2;
@@ -30,13 +32,13 @@ void f(int x, short y, long z) {
         print("Being parsed %d", time);
     }
 
-     switch(a) {
-        case 1:
-            print("1");
-            break;
-        case 2:
-            print("2");
-            break;
+    switch(a) {
+       case 1:
+           print("1");
+           break;
+       case 2:
+           print("2");
+           break;
      }
 
     return;

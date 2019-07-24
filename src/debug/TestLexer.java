@@ -9,7 +9,7 @@ public class TestLexer {
         for (int i = 0; i < 41; i++) {
             lexer.advance();
             int lookahead = lexer.lookAhead;
-            System.out.println("symbol: " + Token.getTokenStr(lookahead));
+            System.out.println("Symbol: " + Token.getTokenStr(lookahead));
         }
     }
 }

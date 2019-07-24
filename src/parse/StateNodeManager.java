@@ -189,7 +189,7 @@ public class StateNodeManager {
                 HashMap<Integer, ProductionsStateNode> map = entry.getValue();
                 for (Map.Entry<Integer, ProductionsStateNode> item : map.entrySet()) {
                     int symbol = item.getKey();
-                    ConsoleDebugColor.outlnPurple("on symbol: " + Token.getTokenStr(symbol));
+                    ConsoleDebugColor.outlnPurple("on Symbol: " + Token.getTokenStr(symbol));
                     ConsoleDebugColor.outlnPurple("to state: ");
                     ProductionsStateNode to = item.getValue();
                     to.debugPrint();
