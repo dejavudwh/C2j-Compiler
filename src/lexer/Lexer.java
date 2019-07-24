@@ -18,7 +18,8 @@ public class Lexer {
     public int lookAhead = Token.UNKNOWN_TOKEN.ordinal();
 
     private static char BLANK = ' ';
-    private static char NEWLINE = '\n';
+    /** windows \r\n**/
+    private static int NEWLINE = 10;
     private static char NULLCHAR = '\0';
 
     private Input input = new Input();
@@ -36,12 +37,14 @@ public class Lexer {
                 boolean flag = false;
                 while (true) {
                     char c = (char) input.inputAdvance();
-                    if ((c == BLANK && !flag) || c == NEWLINE || c == NULLCHAR) {
+                    boolean isWhiteSpace = (c == BLANK && !flag) || c == NEWLINE || c == NULLCHAR;
+                    if (isWhiteSpace) {
                         if (c == NEWLINE) {
                             lineno++;
                         }
                         System.out.println("read: " + (int)c);
-                        if (c == BLANK && current.isEmpty()) {
+                        boolean isContinue = (c == BLANK || c == NEWLINE) && current.isEmpty();
+                        if (isContinue) {
                             continue;
                         }
                         break;
