@@ -57,7 +57,7 @@ public class Specifier {
         return isLong;
     }
 
-    public boolean isSigned() {
+    public boolean isSign() {
         return isSigned;
     }
 
@@ -85,7 +85,7 @@ public class Specifier {
         isLong = aLong;
     }
 
-    public void setSigned(boolean signed) {
+    public void setSign(boolean signed) {
         isSigned = signed;
     }
 

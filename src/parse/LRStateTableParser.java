@@ -19,6 +19,7 @@ public class LRStateTableParser {
 
     private Stack<Integer> statusStack = new Stack<>();
     private Stack<Object> valueStack = new Stack<>();
+    private Object attributeForParentNode = null;
     private Stack<Integer> parseStack = new Stack<>();
     private HashMap<Integer, HashMap<Integer, Integer>> lrStateTable = null;
 
@@ -36,7 +37,7 @@ public class LRStateTableParser {
             Integer action = getAction(statusStack.peek(), lexerInput);
 
             if (action == null) {
-                System.out.println("Shift for input: " + Token.values()[lexerInput].toString());
+                ConsoleDebugColor.outlnPurple("Shift for input: " + Token.values()[lexerInput].toString());
                 System.err.println("The input is denied");
                 return;
             }
@@ -46,46 +47,49 @@ public class LRStateTableParser {
                 parseStack.push(lexerInput);
 
                 if (Token.isTerminal(lexerInput)) {
-                    System.out.println("Shift for input: " + Token.values()[lexerInput].toString());
+                    ConsoleDebugColor.outlnPurple("Shift for input: " + Token.values()[lexerInput].toString());
 
                     lexer.advance();
                     lexerInput = lexer.lookAhead;
+                    valueStack.push(null);
                 } else {
                     lexerInput = lexer.lookAhead;
                 }
             } else {
                 if (action == 0) {
-                    System.out.println("The input can be accepted");
+                    ConsoleDebugColor.outlnPurple("The input can be accepted");
                     return;
                 }
 
                 int reduceProduction = -action;
                 Production product = ProductionManager.getInstance().getProductionByIndex(reduceProduction);
-                System.out.println("reduce by product: ");
+                ConsoleDebugColor.outlnPurple("reduce by product: ");
                 product.debugPrint();
+
+                takeActionForReduce(reduceProduction);
 
                 int rightSize = product.getRight().size();
                 while (rightSize > 0) {
                     parseStack.pop();
+                    valueStack.pop();
                     statusStack.pop();
                     rightSize--;
                 }
 
                 lexerInput = product.getLeft();
                 parseStack.push(lexerInput);
+                valueStack.push(attributeForParentNode);
             }
         }
     }
 
     private Integer getAction(Integer currentState, Integer currentInput) {
         HashMap<Integer, Integer> jump = lrStateTable.get(currentState);
-        if (jump != null) {
-            Integer next = jump.get(currentInput);
-            if (next != null) {
-                return next;
-            }
-        }
-
-        return null;
+        return jump.get(currentInput);
     }
+
+    private void takeActionForReduce(int productionNum) {
+
+    }
+
 }
