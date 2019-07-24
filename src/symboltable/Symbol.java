@@ -1,5 +1,7 @@
 package symboltable;
 
+import parse.LRStateTableParser;
+
 /**
  * Symbolic representation
  *
@@ -14,17 +16,31 @@ public class Symbol {
     boolean implicit;
     boolean duplicate;
 
-    Symbol args = null;
-    Object value = null;
+    public Symbol args = null;
+    public Object value = null;
 
     Symbol next = null;
 
-    TypeLink  typeLinkBegin = null;
-    TypeLink  typeLinkEnd = null;
+    public TypeLink typeLinkBegin = null;
+    public TypeLink typeLinkEnd = null;
+
+    private String symbolScope = LRStateTableParser.GLOBAL_SCOPE;
 
     public Symbol(String name, int level) {
         this.name = name;
         this.level = level;
+    }
+
+    public Symbol copy() {
+        Symbol symbol = new Symbol(this.name, this.level);
+        symbol.args = this.args;
+        symbol.next = this.next;
+        symbol.value = this.value;
+        symbol.typeLinkBegin = this.typeLinkBegin;
+        symbol.typeLinkEnd = this.typeLinkEnd;
+        symbol.symbolScope = this.symbolScope;
+
+        return symbol;
     }
 
     public void addDeclarator(TypeLink type) {
@@ -49,6 +65,37 @@ public class Symbol {
 
     public Symbol getNextSymbol() {
         return next;
+    }
+
+    public String getScope() {
+        return symbolScope;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setNextSymbol(Symbol symbol) {
+        this.next = symbol;
+    }
+
+    public void addScope(String scope) {
+        this.symbolScope = scope;
+    }
+
+    public void setArgList(Symbol symbol) {
+        this.args = symbol;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Symbol symbol = (Symbol) obj;
+        return (this.name.equals(symbol.name) && this.level == symbol.level &&
+                this.symbolScope.equals(symbol.symbolScope));
     }
 
 }

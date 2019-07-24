@@ -1,5 +1,6 @@
 package lexer;
 
+import debug.ConsoleDebugColor;
 import input.Input;
 
 import java.util.HashMap;

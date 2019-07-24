@@ -40,6 +40,7 @@ public class Specifier {
     private boolean isStatic = false;
     private boolean isExternal = false;
     private int constantValue = 0;
+    private StructDefine vStruct = null;
 
     public int getType() {
         return basicType;
@@ -67,6 +68,10 @@ public class Specifier {
 
     public boolean isExternal() {
         return isExternal;
+    }
+
+    public int getConstantValue() {
+        return constantValue;
     }
 
     public void setType(int basicType) {
@@ -99,6 +104,20 @@ public class Specifier {
 
     public void setConstantValue(int constantValue) {
         this.constantValue = constantValue;
+    }
+
+    public String getTypeStringFromNum(int num) {
+        String[] type = new String[]{"NONE", "INT", "CHAR", "VOID", "STRUCT", "LABEL"};
+
+        return type[num];
+    }
+
+    public void setStruct(StructDefine struct) {
+        this.vStruct = struct;
+    }
+
+    public StructDefine getStruct() {
+        return this.vStruct;
     }
 
 }

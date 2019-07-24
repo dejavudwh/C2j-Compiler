@@ -155,10 +155,7 @@ public class SyntaxProductionInit {
     }
 
     private void initVariableDeclaration() {
-
         productionMap.clear();
-
-
         /*LB: { RB:}
          *
          * C variable declaration grammar
@@ -198,7 +195,6 @@ public class SyntaxProductionInit {
          *              | START VAR_DECL
          *
          */
-
 
         //PROGRAM -> EXT_DEF_LIST
         ArrayList<Integer> right = null;

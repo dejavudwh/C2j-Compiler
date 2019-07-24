@@ -30,4 +30,13 @@ public class Declarator {
         return numberOfElements;
     }
 
+    public void setElementNum(int num) {
+        if (num < 0) {
+            numberOfElements = 0;
+        } else {
+            numberOfElements = num;
+            elements = new HashMap<>();
+        }
+    }
+
 }

@@ -1,15 +1,15 @@
 package symboltable;
 
 public class TypeLink {
-    boolean isDeclarator;
+    public boolean isDeclarator;
     /**
      * typedef int
      */
-    boolean isTypeDef;
+    public boolean isTypeDef;
     /**
      * Specifier or Declarator
      */
-    Object typeObject;
+    public Object typeObject;
 
     private TypeLink next = null;
 
