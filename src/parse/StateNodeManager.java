@@ -3,9 +3,7 @@ package parse;
 import debug.ConsoleDebugColor;
 import lexer.Token;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.rmi.server.ExportException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +36,12 @@ public class StateNodeManager {
     }
 
     public void buildTransitionStateMachine() {
+        File table = new File("lrStateTable.sb");
+        if (table.exists()) {
+            return;
+        }
         ProductionManager productionManager = ProductionManager.getInstance();
+        productionManager.buildFirstSets();
         ProductionsStateNode state = getStateNode(productionManager.getProduction(Token.PROGRAM.ordinal()));
 
         state.buildTransition();
@@ -108,6 +111,11 @@ public class StateNodeManager {
     }
 
     public HashMap<Integer, HashMap<Integer, Integer>> getLrStateTable() {
+        File table = new File("lrStateTable.sb");
+        if (table.exists()) {
+            return loadTable();
+        }
+
         Iterator it;
         if (isTransitionTableCompressed) {
             it = compressedStateList.iterator();
@@ -137,7 +145,35 @@ public class StateNodeManager {
             lrStateTable.put(state.stateNum, jump);
         }
 
+        storageTableToFile(lrStateTable);
+
         return lrStateTable;
+    }
+
+    private void storageTableToFile(HashMap<Integer, HashMap<Integer, Integer>> lrStateTable) {
+        try {
+            ConsoleDebugColor.outlnPurple("Start writing the LR state analysis table to a file");
+
+            ObjectOutputStream oos=new ObjectOutputStream(new FileOutputStream("lrStateTable.sb"));
+            oos.writeObject(lrStateTable);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private HashMap<Integer, HashMap<Integer, Integer>> loadTable() {
+        try {
+            ConsoleDebugColor.outlnPurple("Reads the state analysis table from the file");
+
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("lrStateTable.sb"));
+
+            return (HashMap<Integer, HashMap<Integer, Integer>>) ois.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public void debugPrintStateMap() {

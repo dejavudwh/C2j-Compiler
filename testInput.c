@@ -1,8 +1,16 @@
-void f() {
-    struct tag {
-        int a;
-        int b;
-    } st;
+void f(int x, short y, long z);
+
+void f(int x, short y, long z) {
+    struct TAG {
+        int v1;
+        int v2;
+        char v3;
+    } tag;
+
+    struct TAG myTag;
+    struct TAG herTag;
+    myTag.v1 = 1;
+    herTag.v1 = 2;
 
     int a = 0;
     int i = 0;
@@ -17,5 +25,19 @@ void f() {
     for (i = 0;i < 3;i++) {
         int a =2;
     }
+
+    while (true) {
+        print("Being parsed %d", time);
+    }
+
+     switch(a) {
+        case 1:
+            print("1");
+            break;
+        case 2:
+            print("2");
+            break;
+     }
+
     return;
 }

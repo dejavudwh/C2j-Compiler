@@ -21,7 +21,6 @@ public class Test {
     }
 
     private void testParse() throws Exception {
-        ProductionManager pm = ProductionManager.getInstance();
         StateNodeManager snm = StateNodeManager.getInstance();
         snm.buildTransitionStateMachine();
         LRStateTableParser lrtp = new LRStateTableParser(new Lexer());

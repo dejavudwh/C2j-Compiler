@@ -138,8 +138,8 @@ public class ProductionsStateNode {
             }
         }
 
-//        debugPrintPartition();
-//        ConsoleDebugColor.outlnPurple("==== make partition end ====");
+        debugPrintPartition();
+        ConsoleDebugColor.outlnPurple("==== make partition end ====");
     }
 
     private void makeTransition() {
@@ -158,7 +158,7 @@ public class ProductionsStateNode {
             stateNodeManager.addTransition(this, nextState, entry.getKey());
         }
 
-//        debugPrintTransition();
+        debugPrintTransition();
 
         extendFollowingTransition();
     }

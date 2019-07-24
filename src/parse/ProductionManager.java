@@ -27,10 +27,13 @@ public class ProductionManager {
         return instance;
     }
 
-    private void initialize() {
+    public void initialize() {
         SyntaxProductionInit syntaxProductionInit = SyntaxProductionInit.getInstance();
         productionMap = syntaxProductionInit.getProductionMap();
-        firstSetBuilder.buildFirstSets();
+    }
+
+    public void buildFirstSets() {
+        firstSetBuilder.buildFirstSets();;
     }
 
     public FirstSetBuilder getFirstSetBuilder() {

@@ -42,7 +42,6 @@ public class Lexer {
                         if (c == NEWLINE) {
                             lineno++;
                         }
-                        System.out.println("read: " + (int)c);
                         boolean isContinue = (c == BLANK || c == NEWLINE) && current.isEmpty();
                         if (isContinue) {
                             continue;
@@ -53,7 +52,6 @@ public class Lexer {
                             flag = !flag;
                         }
                         current += c;
-                        System.out.println("read: " + (int)c);
                     }
                 }
 
