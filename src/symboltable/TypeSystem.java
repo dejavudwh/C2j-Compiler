@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
@@ -145,6 +146,21 @@ public class TypeSystem {
 
     public StructDefine getStructFromTable(String tag) {
         return structTable.get(tag);
+    }
+
+    public ArrayList<Symbol> getSymbolsByScope(String scope) {
+        ArrayList<Symbol> list = new ArrayList<>();
+        for (Map.Entry<String, ArrayList<Symbol>> entry : symbolTable.entrySet()) {
+            ArrayList<Symbol> args = entry.getValue();
+            for (int i = 0; i < args.size(); i++) {
+                Symbol sym = args.get(i);
+                if (sym.getScope().equals(scope)) {
+                    list.add(sym);
+                }
+            }
+        }
+
+        return list;
     }
 
     public void addStructToTable(StructDefine struct) {

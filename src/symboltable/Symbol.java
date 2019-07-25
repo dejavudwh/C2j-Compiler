@@ -83,6 +83,10 @@ public class Symbol {
         this.symbolScope = scope;
     }
 
+    public Symbol getArgList() {
+        return args;
+    }
+
     public void setArgList(Symbol symbol) {
         this.args = symbol;
     }
@@ -91,8 +95,28 @@ public class Symbol {
         return name;
     }
 
+    public Declarator getDeclarator(int type) {
+        TypeLink begin = typeLinkBegin;
+        while (begin != null && begin.getTypeObject() != null) {
+            if (begin.isDeclarator) {
+                Declarator declarator = (Declarator) begin.getTypeObject();
+                if (declarator.getType() == type) {
+                    return declarator;
+                }
+            }
+
+            begin = begin.toNext();
+        }
+
+        return null;
+    }
+
     public TypeLink getTypeHead() {
         return typeLinkBegin;
+    }
+
+    public Object getValue() {
+        return value;
     }
 
     @Override

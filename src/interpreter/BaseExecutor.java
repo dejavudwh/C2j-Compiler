@@ -1,6 +1,7 @@
 package interpreter;
 
 import ast.AstNode;
+import ast.NodeKey;
 
 /**
  * @author dejavudwh isHudw
@@ -33,8 +34,7 @@ public abstract class BaseExecutor implements Executor {
             Executor executor = factory.getExecutor(child);
             if (executor != null) {
                 executor.execute(child);
-            }
-            else {
+            } else {
                 System.err.println("Not suitable Executor found, node is: " + child.toString());
             }
 
@@ -43,4 +43,38 @@ public abstract class BaseExecutor implements Executor {
             i++;
         }
     }
+
+    protected AstNode executeChild(AstNode root, int childIdx) {
+        root.reverseChildren();
+        AstNode child;
+        ExecutorFactory factory = ExecutorFactory.getInstance();
+        child = (AstNode)root.getChildren().get(childIdx);
+        Executor executor = factory.getExecutor(child);
+        AstNode res = (AstNode)executor.execute(child);
+
+        return res;
+    }
+
+    protected void copyChild(AstNode root, AstNode child) {
+        root.setAttribute(NodeKey.SYMBOL, child.getAttribute(NodeKey.SYMBOL));
+        root.setAttribute(NodeKey.VALUE, child.getAttribute(NodeKey.VALUE));
+        root.setAttribute(NodeKey.TEXT, child.getAttribute(NodeKey.TEXT));
+    }
+
+    protected void setReturnObj(Object obj) {
+        this.returnObj = obj;
+    }
+
+    protected Object getReturnObj() {
+        return returnObj;
+    }
+
+    protected void clearReturnObj() {
+        this.returnObj = null;
+    }
+
+    protected void isContinueExecution(boolean execute) {
+        this.continueExecute = execute;
+    }
+
 }
