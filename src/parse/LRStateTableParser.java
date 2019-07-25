@@ -21,6 +21,7 @@ public class LRStateTableParser {
     int nestingLevel = 0;
     String text = "";
     int enumVal = 0;
+    private String relOperatorText;
 
 
     private Stack<Integer> statusStack = new Stack<>();
@@ -52,6 +53,11 @@ public class LRStateTableParser {
             if (action > 0) {
                 statusStack.push(action);
                 text = lexer.text;
+
+                if (lexerInput == Token.RELOP.ordinal()) {
+                    relOperatorText = text;
+                }
+
                 parseStack.push(lexerInput);
 
                 if (Token.isTerminal(lexerInput)) {
@@ -329,6 +335,14 @@ public class LRStateTableParser {
         symbol.addSpecifier(typeLink);
 
         return true;
+    }
+
+    public int getCurrentLevel() {
+        return nestingLevel;
+    }
+
+    public String getRelOperatorText() {
+        return relOperatorText;
     }
 
 }

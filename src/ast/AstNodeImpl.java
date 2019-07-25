@@ -53,6 +53,25 @@ public class AstNodeImpl extends HashMap<NodeKey, Object> implements AstNode {
 
     @Override
     public Object getAttribute(NodeKey key) {
-        return null;
+        return get(key);
     }
+
+    @Override
+    public String toString() {
+        String info = "";
+        if (get(NodeKey.VALUE) != null) {
+            info += "Node Value is " + get(NodeKey.VALUE).toString();
+        }
+
+        if (get(NodeKey.TEXT) != null) {
+            info += "\nNode Text is " + get(NodeKey.TEXT).toString();
+        }
+
+        if (get(NodeKey.SYMBOL) != null) {
+            info += "\nNode Symbol is " + get(NodeKey.SYMBOL).toString();
+        }
+
+        return info  + "\n Node Type is " + type.toString();
+    }
+
 }
