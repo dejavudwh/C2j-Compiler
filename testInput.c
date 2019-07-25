@@ -1,4 +1,4 @@
-void print(char a[20], char c);
+void print(char a[20]);
 
 void f(int x, short y, long z) {
     enum e {a , b, c};
@@ -31,7 +31,7 @@ void f(int x, short y, long z) {
 
     int time;
     while (1) {
-        print("Being parsed %d", time);
+        time = 4;
     }
 
     switch(a) {

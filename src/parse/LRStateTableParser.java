@@ -1,5 +1,6 @@
 package parse;
 
+import ast.AstBuilder;
 import debug.ConsoleDebugColor;
 import lexer.Lexer;
 import lexer.Token;
@@ -29,6 +30,7 @@ public class LRStateTableParser {
     private Object attributeForParentNode = null;
     private Stack<Integer> parseStack = new Stack<>();
     private TypeSystem typeSystem = TypeSystem.getInstance();
+    AstBuilder astBuilder = AstBuilder.getInstance();
     private HashMap<Integer, HashMap<Integer, Integer>> lrStateTable;
 
     public LRStateTableParser(Lexer lexer) {
@@ -38,6 +40,7 @@ public class LRStateTableParser {
         lexer.advance();
         lexerInput = Token.EXT_DEF_LIST.ordinal();
         lrStateTable = StateNodeManager.getInstance().getLrStateTable();
+        astBuilder.setParser(this);
     }
 
     public void parse() {
@@ -247,6 +250,8 @@ public class LRStateTableParser {
             default:
                 break;
         }
+
+        astBuilder.buildSyntaxTree(productionNum, text);
     }
 
     private Object takeActionForShift(int token) {
@@ -343,6 +348,15 @@ public class LRStateTableParser {
 
     public String getRelOperatorText() {
         return relOperatorText;
+    }
+
+
+    public TypeSystem getTypeSystem() {
+        return typeSystem;
+    }
+
+    public Stack<Object> getValueStack() {
+        return valueStack;
     }
 
 }
