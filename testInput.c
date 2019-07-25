@@ -1,47 +1,16 @@
-void print(char a[20]);
-
-void f(int x, short y, long z) {
-    enum e {a , b, c};
-
+void main() {
     struct TAG {
-        int v1;
-        int v2;
-        char v3;
-    } tag;
-
-    struct TAG myTag;
-    struct TAG herTag;
-    myTag.v1 = 1;
-    herTag.v1 = 2;
-
-    int a = 0;
-    int x = 0;
-
-    if (x < 1)
-        a = 1;
-    else if (x < 2)
-        a = 2;
-    else
-        a = 3;
-
-    int i;
-    for (i = 0; i < 3; i++) {
-        int a =2;
-    }
-
-    int time;
-    while (1) {
-        time = 4;
-    }
-
-    switch(a) {
-       case 1:
-           print("1");
-           break;
-       case 2:
-           print("2");
-           break;
-     }
-
-    return;
+        char c;
+        char b[3];
+        int p;
+    }tag;
+    struct TAG* pTag;
+    int sz ;
+    sz = sizeof(tag);
+    pTag = malloc(sz);
+    pTag[0] = 3;
+    pTag[1] = 4;
+    pTag[2] = 5;
+    pTag[3] = 6;
+    printf("value of c is %d, b[0] is %d, b[1] is %d, b[2] is %d ", pTag->c, pTag->b[0], pTag->b[1], pTag->b[2]);
 }

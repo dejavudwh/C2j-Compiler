@@ -1,5 +1,6 @@
 package interpreter;
 
+import ast.AstBuilder;
 import ast.AstNode;
 import ast.NodeKey;
 import parse.SyntaxProductionInit;
@@ -23,7 +24,6 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
     public Object execute(AstNode root) {
         executeChildren(root);
 
-
         int production = (Integer) root.getAttribute(NodeKey.PRODUCTION);
         String text;
         Symbol symbol;
@@ -36,12 +36,11 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
                 boolean isFloat = text.indexOf('.') != -1;
                 if (isFloat) {
                     value = Float.valueOf(text);
-                    root.setAttribute(NodeKey.VALUE, Float.valueOf(text));
+                    root.setAttribute(NodeKey.VALUE, value);
                 } else {
                     value = Integer.valueOf(text);
-                    root.setAttribute(NodeKey.VALUE, Integer.valueOf(text));
+                    root.setAttribute(NodeKey.VALUE, value);
                 }
-
                 break;
 
             case SyntaxProductionInit.Name_TO_Unary:
@@ -54,9 +53,7 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
 
             case SyntaxProductionInit.String_TO_Unary:
                 text = (String) root.getAttribute(NodeKey.TEXT);
-                //symbol = (Symbol)root.getAttribute(NodeKey.SYMBOL);
                 root.setAttribute(NodeKey.VALUE, text);
-                //root.setAttribute(NodeKey.TEXT, symbol.getName());
                 break;
 
             case SyntaxProductionInit.Unary_LB_Expr_RB_TO_Unary:
@@ -94,16 +91,15 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
             case SyntaxProductionInit.Unary_DecOp_TO_Unary:
                 symbol = (Symbol) root.getChildren().get(0).getAttribute(NodeKey.SYMBOL);
                 Integer val = (Integer) symbol.getValue();
-                IValueSetter setter;
-                setter = (IValueSetter) symbol;
+                ValueSetter setter;
+                setter = (ValueSetter) symbol;
                 try {
-                    if (production == SyntaxProductionInit.Unary_Incop_TO_Unary)
+                    if (production == SyntaxProductionInit.Unary_Incop_TO_Unary) {
                         setter.setValue(val + 1);
-                    else {
+                    } else {
                         setter.setValue(val - 1);
                     }
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                     System.err.println("Runtime Error: Assign Value Error");
                 }
@@ -116,7 +112,7 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
 
             case SyntaxProductionInit.Start_Unary_TO_Unary:
                 child = root.getChildren().get(0);
-                int addr = (Integer) child.getAttribute(NodeKey.VALUE); //get mem addr
+                int addr = (Integer) child.getAttribute(NodeKey.VALUE);
                 symbol = (Symbol) child.getAttribute(NodeKey.SYMBOL);
 
                 MemoryHeap memHeap = MemoryHeap.getInstance();
@@ -129,26 +125,23 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
 
                 DirectMemValueSetter directMemSetter = new DirectMemValueSetter(addr);
                 root.setAttribute(NodeKey.SYMBOL, directMemSetter);
-
                 break;
 
             case SyntaxProductionInit.Unary_LP_RP_TO_Unary:
             case SyntaxProductionInit.Unary_LP_ARGS_RP_TO_Unary:
-                //先获得函数名
                 String funcName = (String) root.getChildren().get(0).getAttribute(NodeKey.TEXT);
                 if (production == SyntaxProductionInit.Unary_LP_ARGS_RP_TO_Unary) {
                     AstNode argsNode = root.getChildren().get(1);
                     ArrayList<Object> argList = (ArrayList<Object>) argsNode.getAttribute(NodeKey.VALUE);
                     ArrayList<Object> symList = (ArrayList<Object>) argsNode.getAttribute(NodeKey.SYMBOL);
-                    FunctionArgumentList.getFunctionArgumentList().setFuncArgList(argList);
-                    FunctionArgumentList.getFunctionArgumentList().setFuncArgSymbolList(symList);
+                    FunctionArgumentList.getInstance().setFuncArgList(argList);
+                    FunctionArgumentList.getInstance().setFuncArgSymbolList(symList);
                 }
 
-                //找到函数执行树头节点
-                AstNode func = CodeTreeBuilder.getCodeTreeBuilder().getFunctionNodeByName(funcName);
+                AstNode func = AstBuilder.getInstance().getFunctionNodeByName(funcName);
                 if (func != null) {
-                    Executor executor = ExecutorFactory.getExecutorFactory().getExecutor(func);
-                    executor.Execute(func);
+                    Executor executor = ExecutorFactory.getInstance().getExecutor(func);
+                    executor.execute(func);
                     Object returnVal = func.getAttribute(NodeKey.VALUE);
                     if (returnVal != null) {
                         System.out.println("function call with name " + funcName + " has return value that is " + returnVal.toString());
@@ -156,12 +149,11 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
                     }
                 } else {
                     ClibCall libCall = ClibCall.getInstance();
-                    if (libCall.isAPICall(funcName)) {
-                        Object obj = libCall.invokeAPI(funcName);
+                    if (libCall.isApiCall(funcName)) {
+                        Object obj = libCall.invokeApi(funcName);
                         root.setAttribute(NodeKey.VALUE, obj);
                     }
                 }
-
                 break;
 
             case SyntaxProductionInit.Unary_StructOP_Name_TO_Unary:
@@ -190,7 +182,7 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
                 root.setAttribute(NodeKey.SYMBOL, args);
                 root.setAttribute(NodeKey.VALUE, args.getValue());
 
-                if (isSymbolStructPointer(symbol) == true) {
+                if (isSymbolStructPointer(symbol)) {
                     checkValidPointer(symbol);
                     structObjSymbol = symbol;
                     monitorSymbol = args;
@@ -199,9 +191,10 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
                 } else {
                     structObjSymbol = null;
                 }
-
                 break;
 
+            default:
+                break;
         }
 
         return root;
@@ -224,11 +217,7 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
     }
 
     private boolean isSymbolStructPointer(Symbol symbol) {
-        if (symbol.getDeclarator(Declarator.POINTER) != null && symbol.getArgList() != null) {
-            return true;
-        }
-
-        return false;
+        return (symbol.getDeclarator(Declarator.POINTER) != null && symbol.getArgList() != null);
     }
 
     private void checkValidPointer(Symbol symbol) {
@@ -251,7 +240,7 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
             return;
         }
 
-        Symbol symbol = null;
+        Symbol symbol;
         if (object instanceof ValueSetter) {
             symbol = ((ValueSetter) object).getSymbol();
         } else {
@@ -273,11 +262,11 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
         Stack<Symbol> stack = reverseStructSymbolList(symbol);
         int offset = 0;
 
-        while (stack.empty() != true) {
+        while (!stack.empty()) {
             Symbol sym = stack.pop();
 
             try {
-                if (isFromStructToMem == true) {
+                if (isFromStructToMem) {
                     offset += writeStructVariablesToMem(sym, mems, offset);
                 } else {
                     offset += writeMemToStructVariables(sym, mems, offset);
@@ -290,7 +279,7 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
         }
     }
 
-    private int writeStructVariablesToMem(Symbol symbol, byte[] mem, int offset) throws Exception {
+    private int writeStructVariablesToMem(Symbol symbol, byte[] mem, int offset) {
         if (symbol.getArgList() != null) {
             return writeStructVariablesToMem(symbol, mem, offset);
         }
@@ -313,8 +302,7 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
         }
     }
 
-
-    private int writeMemToStructVariables(Symbol symbol, byte[] mem, int offset) throws Exception {
+    private int writeMemToStructVariables(Symbol symbol, byte[] mem, int offset) {
         if (symbol.getArgList() != null) {
             //struct variable, copy mem to struct recursively
             return writeMemToStructVariables(symbol, mem, offset);
@@ -367,7 +355,6 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
             try {
                 declarator.addElement(i, val);
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -400,7 +387,7 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
     }
 
     private Stack<Symbol> reverseStructSymbolList(Symbol symbol) {
-        Stack<Symbol> stack = new Stack<Symbol>();
+        Stack<Symbol> stack = new Stack<>();
         Symbol sym = symbol.getArgList();
         while (sym != null) {
             stack.push(sym);
@@ -409,5 +396,5 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
 
         return stack;
     }
-    
+
 }

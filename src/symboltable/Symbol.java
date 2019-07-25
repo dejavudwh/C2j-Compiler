@@ -1,5 +1,6 @@
 package symboltable;
 
+import interpreter.ValueSetter;
 import parse.LRStateTableParser;
 
 /**
@@ -8,7 +9,7 @@ import parse.LRStateTableParser;
  * @author dejavudwh isHudw
  */
 
-public class Symbol {
+public class Symbol implements ValueSetter {
     public String name;
     String rname;
 
@@ -117,6 +118,42 @@ public class Symbol {
 
     public Object getValue() {
         return value;
+    }
+
+    public int getByteSize() {
+        int size = 0;
+        TypeLink head = typeLinkBegin;
+        while (head != null) {
+            if (!head.isDeclarator) {
+                Specifier sp = (Specifier) head.typeObject;
+                if (sp.isLong() || sp.getType() == Specifier.INT ||
+                        getDeclarator(Declarator.POINTER) != null) {
+                    size = 4;
+                    break;
+                } else {
+                    size = 1;
+                    break;
+                }
+            }
+
+            head = head.toNext();
+        }
+
+        return size;
+    }
+
+    @Override
+    public void setValue(Object obj) {
+        if (obj != null) {
+            System.out.println("Assign Value of " + obj.toString() + " to Variable " + name);
+        }
+
+        this.value = obj;
+    }
+
+    @Override
+    public Symbol getSymbol() {
+        return this;
     }
 
     @Override

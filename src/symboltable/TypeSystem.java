@@ -1,6 +1,7 @@
 package symboltable;
 
 import debug.ConsoleDebugColor;
+import interpreter.ClibCall;
 import parse.LRStateTableParser;
 
 import java.lang.reflect.Type;
@@ -173,6 +174,11 @@ public class TypeSystem {
     }
 
     public Symbol getSymbolByText(String text, int level, String scope) {
+        ClibCall libCall = ClibCall.getInstance();
+        if (libCall.isApiCall(text)) {
+            return null;
+        }
+
         if (scope.equals(text)) {
             scope = LRStateTableParser.GLOBAL_SCOPE;
         }

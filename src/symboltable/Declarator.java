@@ -39,4 +39,26 @@ public class Declarator {
         }
     }
 
+    public Object getElement(int index) throws Exception {
+        if (elements == null || index >= numberOfElements) {
+            throw new Exception("element list is null or index out of range");
+        }
+
+        return elements.get(index);
+    }
+
+    public void addElement(int index, Object obj) throws Exception {
+        if (elements == null) {
+            throw new Exception("This is not an Array!");
+        }
+
+        if (index >= numberOfElements) {
+            throw new Exception("Array Out Of Range");
+        }
+
+        if (elements != null) {
+            elements.put(index, obj);
+        }
+    }
+
 }

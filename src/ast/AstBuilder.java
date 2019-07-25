@@ -271,4 +271,13 @@ public class AstBuilder {
         return symbol;
     }
 
+    public AstNode getFunctionNodeByName(String name) {
+        return funcMap.get(name);
+    }
+
+    public AstNode getSyntaxTreeRoot() {
+        AstNode mainNode = funcMap.get("main");
+        return mainNode;
+    }
+
 }
