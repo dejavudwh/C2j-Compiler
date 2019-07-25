@@ -20,6 +20,8 @@ public class LRStateTableParser {
     int lexerInput = 0;
     int nestingLevel = 0;
     String text = "";
+    int enumVal = 0;
+
 
     private Stack<Integer> statusStack = new Stack<>();
     private Stack<Object> valueStack = new Stack<>();
@@ -111,14 +113,14 @@ public class LRStateTableParser {
                 TypeLink link = (TypeLink) attributeForParentNode;
                 Specifier sp = (Specifier) link.getTypeObject();
                 sp.setType(Specifier.STRUCTURE);
-                StructDefine struct = (StructDefine)valueStack.get(valueStack.size() - 1);
+                StructDefine struct = (StructDefine) valueStack.get(valueStack.size() - 1);
                 sp.setStruct(struct);
                 break;
 
             case SyntaxProductionInit.SPECIFIERS_TypeOrClass_TO_SPECIFIERS:
                 attributeForParentNode = valueStack.peek();
-                Specifier last = (Specifier) ((TypeLink)valueStack.get(valueStack.size() - 2)).getTypeObject();
-                Specifier dst = (Specifier) ((TypeLink)attributeForParentNode).getTypeObject();
+                Specifier last = (Specifier) ((TypeLink) valueStack.get(valueStack.size() - 2)).getTypeObject();
+                Specifier dst = (Specifier) ((TypeLink) attributeForParentNode).getTypeObject();
                 typeSystem.specifierCopy(dst, last);
                 break;
 
@@ -129,12 +131,12 @@ public class LRStateTableParser {
 
             case SyntaxProductionInit.START_VarDecl_TO_VarDecl:
             case SyntaxProductionInit.Start_VarDecl_TO_VarDecl:
-                typeSystem.addDeclarator((Symbol)attributeForParentNode, Declarator.POINTER);
+                typeSystem.addDeclarator((Symbol) attributeForParentNode, Declarator.POINTER);
                 break;
 
             case SyntaxProductionInit.VarDecl_LB_ConstExpr_RB_TO_VarDecl:
-                Declarator declarator = typeSystem.addDeclarator((Symbol)valueStack.get(valueStack.size() - 4), Declarator.ARRAY);
-                int arrayNum = (Integer)attributeForParentNode;
+                Declarator declarator = typeSystem.addDeclarator((Symbol) valueStack.get(valueStack.size() - 4), Declarator.ARRAY);
+                int arrayNum = (Integer) attributeForParentNode;
                 declarator.setElementNum(arrayNum);
                 attributeForParentNode = valueStack.get(valueStack.size() - 4);
                 break;
@@ -147,12 +149,12 @@ public class LRStateTableParser {
             case SyntaxProductionInit.VarList_COMMA_ParamDeclaration_TO_VarList:
             case SyntaxProductionInit.DeclList_Comma_Decl_TO_DeclList:
             case SyntaxProductionInit.DefList_Def_TO_DefList:
-                Symbol currentSym = (Symbol)attributeForParentNode;
+                Symbol currentSym = (Symbol) attributeForParentNode;
                 Symbol lastSym;
                 if (productionNum == SyntaxProductionInit.DefList_Def_TO_DefList) {
-                    lastSym = (Symbol)valueStack.get(valueStack.size() - 2);
+                    lastSym = (Symbol) valueStack.get(valueStack.size() - 2);
                 } else {
-                    lastSym = (Symbol)valueStack.get(valueStack.size() - 3);
+                    lastSym = (Symbol) valueStack.get(valueStack.size() - 3);
                 }
                 currentSym.setNextSymbol(lastSym);
                 break;
@@ -160,8 +162,8 @@ public class LRStateTableParser {
             case SyntaxProductionInit.OptSpecifier_ExtDeclList_Semi_TO_ExtDef:
             case SyntaxProductionInit.TypeNT_VarDecl_TO_ParamDeclaration:
             case SyntaxProductionInit.Specifiers_DeclList_Semi_TO_Def:
-                Symbol symbol = (Symbol)attributeForParentNode;
-                TypeLink specifier = (TypeLink)(valueStack.get(valueStack.size() - 3));
+                Symbol symbol = (Symbol) attributeForParentNode;
+                TypeLink specifier = (TypeLink) (valueStack.get(valueStack.size() - 3));
                 typeSystem.addSpecifierToDeclaration(specifier, symbol);
                 typeSystem.addSymbolsToTable(symbol, symbolScope);
 
@@ -176,15 +178,64 @@ public class LRStateTableParser {
 
             case SyntaxProductionInit.NewName_LP_VarList_RP_TO_FunctDecl:
                 setFunctionSymbol(true);
-                Symbol argList = (Symbol)valueStack.get(valueStack.size() - 2);
-                ((Symbol)attributeForParentNode).args = argList;
-                typeSystem.addSymbolsToTable((Symbol)attributeForParentNode, symbolScope);
-                symbolScope = ((Symbol)attributeForParentNode).getName();
+                Symbol argList = (Symbol) valueStack.get(valueStack.size() - 2);
+                ((Symbol) attributeForParentNode).args = argList;
+                typeSystem.addSymbolsToTable((Symbol) attributeForParentNode, symbolScope);
+                symbolScope = ((Symbol) attributeForParentNode).getName();
                 Symbol sym = argList;
                 while (sym != null) {
                     sym.addScope(symbolScope);
                     sym = sym.getNextSymbol();
                 }
+                break;
+
+            case SyntaxProductionInit.NewName_LP_RP_TO_FunctDecl:
+                setFunctionSymbol(false);
+                typeSystem.addSymbolsToTable((Symbol) attributeForParentNode, symbolScope);
+                symbolScope = ((Symbol) attributeForParentNode).getName();
+                break;
+
+            case SyntaxProductionInit.OptSpecifiers_FunctDecl_CompoundStmt_TO_ExtDef:
+                symbol = (Symbol) valueStack.get(valueStack.size() - 2);
+                specifier = (TypeLink) (valueStack.get(valueStack.size() - 3));
+                typeSystem.addSpecifierToDeclaration(specifier, symbol);
+
+                symbolScope = GLOBAL_SCOPE;
+                break;
+
+            case SyntaxProductionInit.Name_To_Tag:
+                symbolScope = text;
+                attributeForParentNode = typeSystem.getStructFromTable(text);
+                if (attributeForParentNode == null) {
+                    attributeForParentNode = new StructDefine(text, nestingLevel, null);
+                    typeSystem.addStructToTable((StructDefine) attributeForParentNode);
+                }
+                break;
+
+            case SyntaxProductionInit.Struct_OptTag_LC_DefList_RC_TO_StructSpecifier:
+                Symbol defList = (Symbol) valueStack.get(valueStack.size() - 2);
+                StructDefine structObj = (StructDefine) valueStack.get(valueStack.size() - 4);
+                structObj.setFields(defList);
+                attributeForParentNode = structObj;
+                break;
+
+            case SyntaxProductionInit.Enum_TO_EnumNT:
+                enumVal = 0;
+                break;
+
+            case SyntaxProductionInit.NameNT_TO_Emurator:
+                doEnum();
+                break;
+
+            case SyntaxProductionInit.Name_Eequal_ConstExpr_TO_Enuerator:
+                enumVal = (Integer)(valueStack.get(valueStack.size() - 1));
+                attributeForParentNode = (Symbol)(valueStack.get(valueStack.size() - 3));
+                doEnum();
+                break;
+
+            case SyntaxProductionInit.Number_TO_ConstExpr:
+            case SyntaxProductionInit.Number_TO_Unary:
+                attributeForParentNode = Integer.valueOf(text);
                 break;
 
             default:
@@ -214,7 +265,7 @@ public class LRStateTableParser {
         Specifier specifier = null;
         while (typeLink != null) {
             if (!typeLink.isDeclarator) {
-                specifier = (Specifier)typeLink.getTypeObject();
+                specifier = (Specifier) typeLink.getTypeObject();
                 if (specifier.getType() == Specifier.STRUCTURE) {
                     isStruct = true;
                     break;
@@ -247,12 +298,37 @@ public class LRStateTableParser {
     private void setFunctionSymbol(boolean hasArgs) {
         Symbol funcSymbol;
         if (hasArgs) {
-            funcSymbol = (Symbol)valueStack.get(valueStack.size() - 4);
+            funcSymbol = (Symbol) valueStack.get(valueStack.size() - 4);
         } else {
-            funcSymbol = (Symbol)valueStack.get(valueStack.size() - 3);
+            funcSymbol = (Symbol) valueStack.get(valueStack.size() - 3);
         }
 
         typeSystem.addDeclarator(funcSymbol, Declarator.FUNCTION);
         attributeForParentNode = funcSymbol;
     }
+
+    private void doEnum() {
+        Symbol symbol = (Symbol)attributeForParentNode;
+        if (convSymToIntConst(symbol, enumVal)) {
+            typeSystem.addSymbolsToTable(symbol, symbolScope);
+            enumVal++;
+        } else {
+            System.err.println("enum symbol redefinition: " + symbol.name);
+        }
+    }
+
+    private boolean convSymToIntConst(Symbol symbol, int val) {
+        if (symbol.getTypeHead() != null) {
+            return false;
+        }
+
+        TypeLink typeLink = typeSystem.newType("int");
+        Specifier specifier = (Specifier)typeLink.getTypeObject();
+        specifier.setConstantValue(val);
+        specifier.setType(Specifier.CONSTANT);
+        symbol.addSpecifier(typeLink);
+
+        return true;
+    }
+
 }

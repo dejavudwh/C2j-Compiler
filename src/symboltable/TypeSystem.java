@@ -143,6 +143,19 @@ public class TypeSystem {
         return symbolTable.get(text);
     }
 
+    public StructDefine getStructFromTable(String tag) {
+        return structTable.get(tag);
+    }
+
+    public void addStructToTable(StructDefine struct) {
+        if (structTable.containsKey(struct.getTag())) {
+            System.err.println("Struct with name: " + struct.getTag() + " is already defined");
+            return;
+        }
+
+        structTable.put(struct.getTag(), struct);
+    }
+
     public Symbol getSymbolByText(String text, int level, String scope) {
         if (scope.equals(text)) {
             scope = LRStateTableParser.GLOBAL_SCOPE;

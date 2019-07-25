@@ -1,4 +1,4 @@
-void f(int x, short y, long z);
+void print(char a[20], char c);
 
 void f(int x, short y, long z) {
     enum e {a , b, c};
@@ -15,20 +15,22 @@ void f(int x, short y, long z) {
     herTag.v1 = 2;
 
     int a = 0;
-    int i = 0;
+    int x = 0;
 
-    if (i < 1)
+    if (x < 1)
         a = 1;
-    else if (i < 2)
+    else if (x < 2)
         a = 2;
     else
         a = 3;
 
-    for (i = 0;i < 3;i++) {
+    int i;
+    for (i = 0; i < 3; i++) {
         int a =2;
     }
 
-    while (true) {
+    int time;
+    while (1) {
         print("Being parsed %d", time);
     }
 

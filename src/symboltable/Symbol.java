@@ -9,7 +9,7 @@ import parse.LRStateTableParser;
  */
 
 public class Symbol {
-    String name;
+    public String name;
     String rname;
 
     int level;
@@ -89,6 +89,10 @@ public class Symbol {
 
     public String getName() {
         return name;
+    }
+
+    public TypeLink getTypeHead() {
+        return typeLinkBegin;
     }
 
     @Override
