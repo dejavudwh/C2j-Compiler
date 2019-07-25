@@ -3,6 +3,7 @@ package ast;
 import lexer.Token;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -15,6 +16,8 @@ public class AstNodeImpl extends HashMap<NodeKey, Object> implements AstNode {
     private AstNodeImpl parent;
     private ArrayList<AstNode> children;
     String   name;
+
+    private  boolean isChildrenReverse = false;
 
     public AstNodeImpl(Token type) {
         this.type = type;
@@ -36,6 +39,21 @@ public class AstNodeImpl extends HashMap<NodeKey, Object> implements AstNode {
     @Override
     public AstNode getParent() {
         return parent;
+    }
+
+    @Override
+    public  void reverseChildren() {
+        if (isChildrenReverse) {
+            return;
+        }
+
+        Collections.reverse(children);
+        isChildrenReverse = true;
+    }
+
+    @Override
+    public boolean isChildrenReverse() {
+        return isChildrenReverse;
     }
 
     @Override

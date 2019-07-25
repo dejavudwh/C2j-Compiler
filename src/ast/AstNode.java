@@ -18,4 +18,8 @@ public interface AstNode {
 
     public Object getAttribute(NodeKey key);
 
+    public boolean isChildrenReverse();
+
+    public void reverseChildren();
+
 }
