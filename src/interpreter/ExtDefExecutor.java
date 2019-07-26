@@ -2,6 +2,7 @@ package interpreter;
 
 import ast.AstNode;
 import ast.NodeKey;
+import debug.ConsoleDebugColor;
 import parse.SyntaxProductionInit;
 import symboltable.Symbol;
 import symboltable.TypeSystem;
@@ -48,7 +49,7 @@ public class ExtDefExecutor extends BaseExecutor {
     }
 
     private void saveArgs() {
-        System.out.println("Save arguments....");
+        ConsoleDebugColor.outlnPurple("Save arguments....");
         TypeSystem typeSystem = TypeSystem.getInstance();
         ArrayList<Symbol> args = typeSystem.getSymbolsByScope(funcName);
         int count = 0;
@@ -61,7 +62,7 @@ public class ExtDefExecutor extends BaseExecutor {
     }
 
     private void restoreArgs() {
-        System.out.println("Restore arguments....");
+        ConsoleDebugColor.outlnPurple("Restore arguments....");
         TypeSystem typeSystem = TypeSystem.getInstance();
         ArrayList<Symbol> args = typeSystem.getSymbolsByScope(funcName);
         int count = 0;

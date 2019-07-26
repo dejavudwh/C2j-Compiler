@@ -1,5 +1,6 @@
 package interpreter;
 
+import debug.ConsoleDebugColor;
 import symboltable.Declarator;
 import symboltable.Symbol;
 
@@ -23,7 +24,7 @@ public class ArrayValueSetter implements ValueSetter {
         try {
             declarator.addElement(index, obj);
 
-            System.out.println("Set Value of " + obj.toString() + " to Array of name " + symbol.getName() + " with index of " + index);
+            ConsoleDebugColor.outlnPurple("Set Value of " + obj.toString() + " to Array of name " + symbol.getName() + " with index of " + index);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();

@@ -2,6 +2,7 @@ package interpreter;
 
 import ast.AstNode;
 import ast.NodeKey;
+import debug.ConsoleDebugColor;
 import parse.SyntaxProductionInit;
 
 /**
@@ -31,15 +32,15 @@ public class BinaryExecutor extends BaseExecutor {
                     String text = root.getChildren().get(0).getAttribute(NodeKey.TEXT) + " plus " + root.getChildren().get(1).getAttribute(NodeKey.TEXT);
                     root.setAttribute(NodeKey.VALUE, val1 + val2);
                     root.setAttribute(NodeKey.TEXT, text);
-                    System.out.println(text + " is " + (val1 + val2));
+                    ConsoleDebugColor.outlnPurple(text + " is " + (val1 + val2));
                 } else if (production == SyntaxProductionInit.Binary_Minus_Binary_TO_Binary) {
                     String text = root.getChildren().get(0).getAttribute(NodeKey.TEXT) + " minus " + root.getChildren().get(1).getAttribute(NodeKey.TEXT);
                     root.setAttribute(NodeKey.VALUE, val1 - val2);
                     root.setAttribute(NodeKey.TEXT, text);
-                    System.out.println(text + " is " + (val1 - val2));
+                    ConsoleDebugColor.outlnPurple(text + " is " + (val1 - val2));
                 } else {
                     root.setAttribute(NodeKey.VALUE, val1 / val2);
-                    System.out.println(root.getChildren().get(0).getAttribute(NodeKey.TEXT) + " is divided by "
+                    ConsoleDebugColor.outlnPurple(root.getChildren().get(0).getAttribute(NodeKey.TEXT) + " is divided by "
                             + root.getChildren().get(1).getAttribute(NodeKey.TEXT) + " and result is " + (val1 / val2));
                 }
                 break;

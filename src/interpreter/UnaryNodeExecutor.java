@@ -3,6 +3,7 @@ package interpreter;
 import ast.AstBuilder;
 import ast.AstNode;
 import ast.NodeKey;
+import debug.ConsoleDebugColor;
 import parse.SyntaxProductionInit;
 import symboltable.Declarator;
 import symboltable.Symbol;
@@ -144,7 +145,7 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
                     executor.execute(func);
                     Object returnVal = func.getAttribute(NodeKey.VALUE);
                     if (returnVal != null) {
-                        System.out.println("function call with name " + funcName + " has return value that is " + returnVal.toString());
+                        ConsoleDebugColor.outlnPurple("function call with name " + funcName + " has return value that is " + returnVal.toString());
                         root.setAttribute(NodeKey.VALUE, returnVal);
                     }
                 } else {
@@ -228,13 +229,16 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
     }
 
     @Override
-    public void handleExecutorMessage(AstNode code) {
-        int productNum = (Integer) code.getAttribute(NodeKey.PRODUCTION);
+    public void handleExecutorMessage(AstNode node) {
+        if (node.getAttribute(NodeKey.PRODUCTION) == null) {
+            return;
+        }
+        int productNum = (Integer) node.getAttribute(NodeKey.PRODUCTION);
         if (productNum != SyntaxProductionInit.NoCommaExpr_Equal_NoCommaExpr_TO_NoCommaExpr) {
             return;
         }
 
-        Object object = code.getAttribute(NodeKey.SYMBOL);
+        Object object = node.getAttribute(NodeKey.SYMBOL);
 
         if (object == null) {
             return;
@@ -249,7 +253,7 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
 
 
         if (symbol == monitorSymbol) {
-            System.out.println("UnaryNodeExecutor receive msg for assign execution");
+            ConsoleDebugColor.outlnPurple("UnaryNodeExecutor receive msg for assign execution");
             copyBetweenStructAndMem(structObjSymbol, true);
         }
     }
@@ -373,12 +377,12 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
         for (int i = 0; i < elemCount; i++) {
             try {
                 Integer val = (Integer) declarator.getElement(i);
-                byte[] bytes = ByteBuffer.allocate(sz).putInt(val).array();
+                //TODO size + 8
+                byte[] bytes = ByteBuffer.allocate(sz + 8).putInt(val).array();
                 for (int j = 0; j < sz; j++) {
                     mem[offset + j] = bytes[j];
                 }
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

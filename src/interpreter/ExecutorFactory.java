@@ -78,6 +78,9 @@ public class ExecutorFactory {
             case ARGS:
                 return new ArgsExecutor();
 
+            case RELOP:
+                return new RelOpExecutor();
+
             default:
                 break;
         }

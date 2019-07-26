@@ -1,5 +1,6 @@
 package symboltable;
 
+import debug.ConsoleDebugColor;
 import interpreter.ValueSetter;
 import parse.LRStateTableParser;
 
@@ -145,7 +146,7 @@ public class Symbol implements ValueSetter {
     @Override
     public void setValue(Object obj) {
         if (obj != null) {
-            System.out.println("Assign Value of " + obj.toString() + " to Variable " + name);
+            ConsoleDebugColor.outlnPurple("Assign Value of " + obj.toString() + " to Variable " + name);
         }
 
         this.value = obj;

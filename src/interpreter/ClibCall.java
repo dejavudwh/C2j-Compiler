@@ -1,5 +1,6 @@
 package interpreter;
 
+import debug.ConsoleDebugColor;
 import symboltable.Declarator;
 import symboltable.Symbol;
 
