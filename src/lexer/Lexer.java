@@ -77,7 +77,7 @@ public class Lexer {
                         current = current.substring(1);
                         return Token.SEMI.ordinal();
                     case '+':
-                        if (current.charAt(i + 1) == '+') {
+                        if (i + 1 < current.length() && current.charAt(i + 1) == '+') {
                             current = current.substring(2);
                             return Token.INCOP.ordinal();
                         }

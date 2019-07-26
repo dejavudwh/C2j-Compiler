@@ -11,9 +11,7 @@ import lexer.Token;
 public class ExecutorFactory {
     private static ExecutorFactory instance = null;
 
-    private ExecutorFactory() {
-
-    }
+    private ExecutorFactory() { }
 
     public static ExecutorFactory getInstance() {
         if (instance == null) {

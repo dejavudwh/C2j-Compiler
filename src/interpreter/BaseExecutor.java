@@ -22,15 +22,12 @@ public abstract class BaseExecutor implements Executor {
 
         int i = 0;
         while (i < root.getChildren().size()) {
-
             if (!continueExecute) {
                 break;
             }
 
             AstNode child = root.getChildren().get(i);
-
             executorBrocaster.brocastBeforeExecution(child);
-
             Executor executor = factory.getExecutor(child);
             if (executor != null) {
                 executor.execute(child);
