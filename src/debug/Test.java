@@ -30,17 +30,8 @@ public class Test {
     }
 
     private void testInterpreter() {
-        StateNodeManager snm = StateNodeManager.getInstance();
-        snm.buildTransitionStateMachine();
-        LRStateTableParser lrtp = new LRStateTableParser(new Lexer());
-        lrtp.parse();
-        Interpreter interpreter = Interpreter.getInstance();
-        AstBuilder astBuilder = AstBuilder.getInstance();
-        interpreter.execute(astBuilder.getSyntaxTreeRoot());
     }
 
     public static void main(String[] args) {
-        Test test = new Test();
-        test.testInterpreter();
     }
 }
