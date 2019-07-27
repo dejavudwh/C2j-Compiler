@@ -123,6 +123,9 @@ public class SyntaxProductionInit {
     public static final int Start_Unary_TO_Unary = 99;
     //UNARY -> UNARY STRUCTOP NAME 100
     public static final int Unary_StructOP_Name_TO_Unary = 100;
+    //DEF_LIST ->  DEF (28) for codegen
+    public static final int Def_To_DefList = 28;
+    public static final int Binary_Start_Binary_TO_Binary = 67;
 
     private static SyntaxProductionInit instance = null;
     private int productionNum = 0;

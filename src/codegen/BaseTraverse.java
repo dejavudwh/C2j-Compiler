@@ -12,6 +12,10 @@ public abstract class BaseTraverse implements Traverse {
     Generator generator;
 
     private static boolean continueExecute = true;
+    private static Object returnObj = null;
+    public static boolean inIfElseStatement = false;
+    public static boolean isCompileMode = false;
+    public static boolean resultOnStack = false;
 
     public BaseTraverse() {
         generatorBrocaster = GeneratorBrocasterImpl.getInstance();
@@ -63,4 +67,21 @@ public abstract class BaseTraverse implements Traverse {
 
         return res;
     }
+
+    protected void setReturnObj(Object obj) {
+        this.returnObj = obj;
+    }
+
+    protected Object getReturnObj() {
+        return returnObj;
+    }
+
+    protected void clearReturnObj() {
+        this.returnObj = null;
+    }
+
+    protected void isContinueExecution(boolean execute) {
+        this.continueExecute = execute;
+    }
+
 }

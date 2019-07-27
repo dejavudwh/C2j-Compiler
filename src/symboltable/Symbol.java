@@ -157,6 +157,40 @@ public class Symbol implements ValueSetter {
         return this;
     }
 
+    /** The following method is required only in code generation */
+    public Specifier getSpecifierByType(int type) {
+        TypeLink head = typeLinkBegin;
+        while (head != null) {
+            if (!head.isDeclarator) {
+                Specifier sp = (Specifier) head.typeObject;
+                if (sp.getType() == type) {
+                    return sp;
+                }
+            }
+
+            head = head.toNext();
+        }
+
+        return null;
+    }
+
+    public boolean hasType(int type) {
+        TypeLink  head = typeLinkBegin;
+        while (head != null) {
+            if (!head.isDeclarator) {
+                Specifier sp = (Specifier)head.typeObject;
+                if (sp.getType() == type) {
+                    return true;
+                }
+            }
+
+            head = head.toNext();
+        }
+
+
+        return false;
+    }
+
     @Override
     public boolean equals(Object obj) {
         Symbol symbol = (Symbol) obj;
