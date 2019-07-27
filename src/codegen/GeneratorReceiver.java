@@ -8,5 +8,5 @@ import ast.AstNode;
  */
 
 public interface GeneratorReceiver {
-    void handleExecutorMessage(AstNode code);
+    void handleGeneratorMessage(AstNode code);
 }

@@ -3,6 +3,11 @@ package codegen;
 import symboltable.Declarator;
 import symboltable.Symbol;
 
+/**
+ *
+ * @author dejavudhw isHudw
+ */
+
 public class ArrayValueSetter implements ValueSetter {
     private Symbol symbol;
     private int index = 0;

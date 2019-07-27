@@ -30,6 +30,10 @@ public class CodeGenerator {
         }
     }
 
+    public void setNameAndDeclaration(String name, String declaration) {
+        nameToDeclaration.put(name, declaration);
+    }
+
     public void emitString(String s) {
         if (buffered) {
             bufferedContent += s + "\n";
@@ -92,10 +96,98 @@ public class CodeGenerator {
         bytecodeFile.flush();
     }
 
+    public void emitDirective(Directive directive) {
+        if (buffered) {
+            bufferedContent += directive.toString() + "\n";
+            return;
+        }
+
+        if (classDefine) {
+            classDefinition += directive.toString() + "\n";
+            return;
+        }
+
+        bytecodeFile.println(directive.toString());
+        bytecodeFile.flush();
+        ++instructionCount;
+    }
+
+    public void emitDirective(Directive directive, String operand) {
+        if (buffered) {
+            bufferedContent += directive.toString() + " " + operand + "\n";
+            return;
+        }
+
+        if (classDefine) {
+            classDefinition += directive.toString() + " " + operand + "\n";
+            return;
+        }
+
+        bytecodeFile.println(directive.toString() + " " + operand);
+        bytecodeFile.flush();
+        ++instructionCount;
+    }
+
+    public void emitDirective(Directive directive, int operand) {
+        if (buffered) {
+            bufferedContent += directive.toString() + " " + operand + "\n";
+            return;
+        }
+
+        if (classDefine) {
+            classDefinition += directive.toString() + " " + operand + "\n";
+            return;
+        }
+
+        bytecodeFile.println(directive.toString() + " " + operand);
+        ++instructionCount;
+    }
+
+    public void emitDirective(Directive directive, String operand1, String operand2) {
+        if (buffered) {
+            bufferedContent += directive.toString() + " " + operand1 + " " + operand2 + "\n";
+            return;
+        }
+
+        if (classDefine) {
+            classDefinition += directive.toString() + " " + operand1 + " " + operand2 + "\n";
+            return;
+        }
+
+        bytecodeFile.println(directive.toString() + " " + operand1 + " " + operand2);
+        ++instructionCount;
+    }
+
+    public void emitDirective(Directive directive, String operand1, String operand2, String operand3) {
+        if (buffered) {
+            bufferedContent += directive.toString() + " " + operand1 + " " + operand2 + " " + operand3 + "\n";
+            return;
+        }
+
+        if (classDefine) {
+            classDefinition += directive.toString() + " " + operand1 + " " + operand2 + " " + operand3 + "\n";
+            return;
+        }
+
+        bytecodeFile.println(directive.toString() + " " + operand1 + " " + operand2 + " " + operand3);
+        ++instructionCount;
+    }
+
+    public String getDeclarationByName(String name) {
+        return nameToDeclaration.get(name);
+    }
+
+    public void setClassDefinition(boolean isClass) {
+        this.classDefine = isClass;
+    }
+
+    public void setInstructionBuffered(boolean isBuffer) {
+        this.buffered = isBuffer;
+    }
+
     public void finish() {
         bytecodeFile.close();
     }
-
 
 }
 

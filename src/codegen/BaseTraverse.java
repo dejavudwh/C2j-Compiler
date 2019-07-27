@@ -16,6 +16,7 @@ public abstract class BaseTraverse implements Traverse {
     public static boolean inIfElseStatement = false;
     public static boolean isCompileMode = false;
     public static boolean resultOnStack = false;
+    public static String funcName = "";
 
     public BaseTraverse() {
         generatorBrocaster = GeneratorBrocasterImpl.getInstance();

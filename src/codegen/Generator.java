@@ -1,9 +1,6 @@
 package codegen;
 
-import symboltable.Declarator;
-import symboltable.Specifier;
-import symboltable.Symbol;
-import symboltable.TypeSystem;
+import symboltable.*;
 
 import java.util.*;
 
@@ -73,7 +70,7 @@ public class Generator extends CodeGenerator {
         }
 
         int idx = getLocalVariableIndex(symbol);
-        
+
         this.emit(Instruction.ALOAD, "" + idx);
         if (index instanceof Integer) {
             this.emit(Instruction.SIPUSH, "" + index);
@@ -182,6 +179,14 @@ public class Generator extends CodeGenerator {
         return embedded + "branch" + branch_count;
     }
 
+    public void setCurrentFuncName(String name) {
+        nameStack.push(name);
+    }
+
+    public String getCurrentFuncName() {
+        return nameStack.peek();
+    }
+
     public void increaseBranch() {
         branch_count++;
     }
@@ -190,6 +195,204 @@ public class Generator extends CodeGenerator {
         String s = "\n" + embedded + "branch_out" + branch_out + ":\n";
         this.emitString(s);
         branch_out++;
+    }
+
+    public void initFuncArguments(boolean b) {
+        isInitArguments = b;
+    }
+
+    public boolean isPassingArguments() {
+        return isInitArguments;
+    }
+
+    public String getProgramName() {
+        return programName;
+    }
+
+    public void createStructArray(Symbol structSymArray) {
+        //先判断数组是否已经创建过，如果创建过，那么直接返回
+        Specifier sp = structSymArray.getSpecifierByType(Specifier.STRUCTURE);
+        /*
+         * 在队列structNameList中查询Symbol对应的结构体名字是否已经存储在队列中，如果在队列中有了
+         * 那表明该结构体已经被转换成java类，并且类的定义已经转换成java汇编语言了
+         */
+        StructDefine struct = sp.getStruct();
+        if (structNameList.contains(struct.getTag())) {
+            return;
+        } else {
+            structNameList.add(struct.getTag());
+        }
+
+        Declarator declarator = structSymArray.getDeclarator(Declarator.ARRAY);
+        int eleCount = declarator.getElementNum();
+        this.emit(Instruction.SIPUSH, "" + eleCount);
+        this.emit(Instruction.ANEWARRAY, struct.getTag());
+
+        int idx = getLocalVariableIndex(structSymArray);
+        this.emit(Instruction.ASTORE, "" + idx);
+
+        declareStructAsClass(struct);
+    }
+
+    private void declareStructAsClass(StructDefine struct) {
+        //这条语句的作用是，把接下来生成的指令先缓存起来，而不是直接写入到文件里
+        this.setClassDefinition(true);
+
+        this.emitDirective(Directive.CLASS_PUBLIC, struct.getTag());
+        this.emitDirective(Directive.SUPER, "java/lang/Object");
+
+        /*
+         * 把结构体中的每个成员转换成相应的具有public性质的java类成员
+         */
+        Symbol fields = struct.getFields();
+        do {
+            String fieldName = fields.getName() + " ";
+            if (fields.getDeclarator(Declarator.ARRAY) != null) {
+                fieldName += "[";
+            }
+
+            if (fields.hasType(Specifier.INT)) {
+                fieldName += "I";
+            } else if (fields.hasType(Specifier.CHAR)) {
+                fieldName += "C";
+            } else if (fields.hasType(Specifier.CHAR) && fields.getDeclarator(Declarator.POINTER) != null) {
+                fieldName += "Ljava/lang/String;";
+            }
+
+            this.emitDirective(Directive.FIELD_PUBLIC, fieldName);
+            fields = fields.getNextSymbol();
+        } while (fields != null);
+
+        /*
+         * 实现类的初始构造函数，它调用父类的构造函数后，接下来通过putfield指令，把类的每个成员都初始化为0
+         */
+        this.emitDirective(Directive.METHOD_PUBLIC, "<init>()V");
+        this.emit(Instruction.ALOAD, "0");
+        String superInit = "java/lang/Object/<init>()V";
+        this.emit(Instruction.INVOKESPECIAL, superInit);
+
+        fields = struct.getFields();
+        do {
+            this.emit(Instruction.ALOAD, "0");
+            String fieldName = struct.getTag() + "/" + fields.getName();
+            String fieldType = "";
+            if (fields.hasType(Specifier.INT)) {
+                fieldType = "I";
+                this.emit(Instruction.SIPUSH, "0");
+            } else if (fields.hasType(Specifier.CHAR)) {
+                fieldType = "C";
+                this.emit(Instruction.SIPUSH, "0");
+            } else if (fields.hasType(Specifier.CHAR) && fields.getDeclarator(Declarator.POINTER) != null) {
+                fieldType = "Ljava/lang/String;";
+                this.emit(Instruction.LDC, " ");
+            }
+
+            String classField = fieldName + " " + fieldType;
+            this.emit(Instruction.PUTFIELD, classField);
+
+            fields = fields.getNextSymbol();
+        } while (fields != null);
+
+        this.emit(Instruction.RETURN);
+        this.emitDirective(Directive.END_METHOD);
+        this.emitDirective(Directive.END_CLASS);
+
+        this.setClassDefinition(false);
+    }
+
+    public void createInstanceForStructArray(Symbol structSymArray, int idx) {
+        //先把结构体数组对象加载到堆栈上
+        int i = getLocalVariableIndex(structSymArray);
+        this.emit(Instruction.ALOAD, "" + i);
+
+        //把构造的实例对象放置到数组对应下标
+        this.emit(Instruction.SIPUSH, "" + idx);
+
+        //先构造一个结构体实例对象
+        Specifier sp = structSymArray.getSpecifierByType(Specifier.STRUCTURE);
+        StructDefine struct = sp.getStruct();
+        this.emit(Instruction.NEW, struct.getTag());
+        this.emit(Instruction.DUP);
+        this.emit(Instruction.INVOKESPECIAL, struct.getTag() + "/" + "<init>()V");
+
+        this.emit(Instruction.AASTORE);
+    }
+
+    public void readValueFromStructMember(Symbol structSym, Symbol field) {
+
+        ArrayValueSetter vs = (ArrayValueSetter) structSym.getValueSetter();
+        if (vs != null) {
+            //结构体对象来自于结构体数组，此时需要把结构体数组对象加载到堆栈
+            structSym = vs.getSymbol();
+        }
+        /*
+         * 先把类的实例加载到堆栈顶部, 如果结构体来自于数组，那么这里加载到堆栈的就是结构体数组对象
+         */
+        int idx = getLocalVariableIndex(structSym);
+        this.emit(Instruction.ALOAD, "" + idx);
+
+        if (vs != null) {
+            //把要修改的结构体对象从结构体数组里加载到堆栈上
+            int i = (int) vs.getIndex();
+            this.emit(Instruction.SIPUSH, "" + i);
+            this.emit(Instruction.AALOAD);
+        }
+
+        /*
+         * 如果我们要读取myTag.x 下面的语句会构造出
+         * CTag/x  I
+         */
+        String fieldType = "";
+        if (field.hasType(Specifier.INT)) {
+            fieldType = "I";
+        } else if (field.hasType(Specifier.CHAR)) {
+            fieldType = "C";
+        } else if (field.hasType(Specifier.CHAR) && field.getDeclarator(Declarator.POINTER) != null) {
+            fieldType = "Ljava/lang/String;";
+        }
+
+        //通过getfield指令把结构体的成员变量读出来后压入堆栈顶部
+        Specifier sp = structSym.getSpecifierByType(Specifier.STRUCTURE);
+        StructDefine struct = sp.getStruct();
+        String fieldContent = struct.getTag() + "/" + field.getName() + " " + fieldType;
+        this.emit(Instruction.GETFIELD, fieldContent);
+    }
+
+    public void putStructToClassDeclaration(Symbol symbol) {
+        //判断传入的Symbol变量是否是结构体变量，不是的话立刻返回
+        Specifier sp = symbol.getSpecifierByType(Specifier.STRUCTURE);
+        if (sp == null) {
+            return;
+        }
+
+        /*
+         * 在队列structNameList中查询Symbol对应的结构体名字是否已经存储在队列中，如果在队列中有了
+         * 那表明该结构体已经被转换成java类，并且类的定义已经转换成java汇编语言了
+         */
+        StructDefine struct = sp.getStructObj();
+        if (structNameList.contains(struct.getTag())) {
+            return;
+        } else {
+            structNameList.add(struct.getTag());
+        }
+
+        /*
+         * 输出相应指令，把结构体转换成java类
+         */
+        //如果当前声明的是结构体数组，那么就不用在堆栈上构建一个实例,而是直接从数组中把实例加载到堆栈上
+        if (symbol.getValueSetter() == null) {
+            this.emit(Instruction.NEW, struct.getTag());
+            this.emit(Instruction.DUP);
+            this.emit(Instruction.INVOKESPECIAL, struct.getTag()+"/"+"<init>()V");
+            int idx = this.getLocalVariableIndex(symbol);
+            this.emit(Instruction.ASTORE, ""+idx);
+        }
+
+        declareStructAsClass(struct);
+    }
+
+    public void popFuncName() {
+        nameStack.pop();
     }
 
 }

@@ -28,6 +28,11 @@ public class Symbol implements ValueSetter {
 
     private String symbolScope = LRStateTableParser.GLOBAL_SCOPE;
 
+    /** The following method is required only in code generation */
+    private Object valueSetter = null;
+    private boolean isMember = false;
+    private Symbol  structParent = null;
+
     public Symbol(String name, int level) {
         this.name = name;
         this.level = level;
@@ -157,6 +162,13 @@ public class Symbol implements ValueSetter {
         return this;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        Symbol symbol = (Symbol) obj;
+        return (this.name.equals(symbol.name) && this.level == symbol.level &&
+                this.symbolScope.equals(symbol.symbolScope));
+    }
+
     /** The following method is required only in code generation */
     public Specifier getSpecifierByType(int type) {
         TypeLink head = typeLinkBegin;
@@ -191,11 +203,17 @@ public class Symbol implements ValueSetter {
         return false;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        Symbol symbol = (Symbol) obj;
-        return (this.name.equals(symbol.name) && this.level == symbol.level &&
-                this.symbolScope.equals(symbol.symbolScope));
+    public Object getValueSetter() {
+        return this.valueSetter;
+    }
+
+    public void addValueSetter(Object setter) {
+        this.valueSetter = setter;
+    }
+
+    public void setStructParent(Symbol parent) {
+        this.isMember = true;
+        this.structParent = parent;
     }
 
 }
