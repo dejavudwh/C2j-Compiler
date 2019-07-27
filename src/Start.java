@@ -26,9 +26,9 @@ public class Start {
 
     public static void main(String[] args) {
         Start start = new Start();
-        if (STARTTYPE == 1) {
+        if (STARTTYPE == Start.INTERPRETER) {
             start.interpreter();
-        } else if (STARTTYPE == 2) {
+        } else if (STARTTYPE == Start.CODEGEN) {
             start.codegen();
         }
     }
