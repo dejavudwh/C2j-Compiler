@@ -86,10 +86,10 @@ public class Lexer {
                         return Token.PLUS.ordinal();
 
                     case '-':
-                        if (current.charAt(i + 1) == '>') {
+                        if (i + 1 < current.length() && current.charAt(i + 1) == '>') {
                             current = current.substring(2);
                             return Token.STRUCTOP.ordinal();
-                        } else if (current.charAt(i + 1) == '-') {
+                        } else if (i + 1 < current.length() && current.charAt(i + 1) == '-') {
                             current = current.substring(2);
                             return Token.DECOP.ordinal();
                         }

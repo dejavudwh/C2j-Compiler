@@ -152,7 +152,7 @@ public class StateNodeManager {
 
     private void storageTableToFile(HashMap<Integer, HashMap<Integer, Integer>> lrStateTable) {
         try {
-            ConsoleDebugColor.outlnPurple("Start writing the LR state analysis table to a file");
+            ConsoleDebugColor.outlnPurple("start.Start writing the LR state analysis table to a file");
 
             ObjectOutputStream oos=new ObjectOutputStream(new FileOutputStream("lrStateTable.sb"));
             oos.writeObject(lrStateTable);

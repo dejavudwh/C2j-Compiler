@@ -2,12 +2,9 @@ package ast;
 
 import lexer.Token;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 /**
- *
  * @author dejavudwh isHudw
  */
 
@@ -15,9 +12,9 @@ public class AstNodeImpl extends HashMap<NodeKey, Object> implements AstNode {
     private Token type;
     private AstNodeImpl parent;
     private ArrayList<AstNode> children;
-    String   name;
+    String name;
 
-    private  boolean isChildrenReverse = false;
+    private boolean isChildrenReverse = false;
 
     public AstNodeImpl(Token type) {
         this.type = type;
@@ -30,7 +27,7 @@ public class AstNodeImpl extends HashMap<NodeKey, Object> implements AstNode {
     public AstNode addChild(AstNode node) {
         if (node != null) {
             children.add(node);
-            ((AstNodeImpl)node).parent = this;
+            ((AstNodeImpl) node).parent = this;
         }
 
         return node;
@@ -42,7 +39,7 @@ public class AstNodeImpl extends HashMap<NodeKey, Object> implements AstNode {
     }
 
     @Override
-    public  void reverseChildren() {
+    public void reverseChildren() {
         if (isChildrenReverse) {
             return;
         }
@@ -58,13 +55,15 @@ public class AstNodeImpl extends HashMap<NodeKey, Object> implements AstNode {
 
     @Override
     public ArrayList<AstNode> getChildren() {
+        reverseChildren();
+
         return children;
     }
 
     @Override
     public void setAttribute(NodeKey key, Object value) {
         if (key == NodeKey.TEXT) {
-            name = (String)value;
+            name = (String) value;
         }
         put(key, value);
     }
@@ -89,7 +88,20 @@ public class AstNodeImpl extends HashMap<NodeKey, Object> implements AstNode {
             info += "\nNode Symbol is " + get(NodeKey.SYMBOL).toString();
         }
 
-        return info  + "\n Node Type is " + type.toString();
+        return info + "\n Node Type is " + type.toString();
     }
 
+    @Override
+    public AstNode copy() {
+        AstNodeImpl copy = (AstNodeImpl) NodeFactory.createICodeNode(type);
+        Set<Entry<NodeKey, Object>> attributes = entrySet();
+        Iterator<Map.Entry<NodeKey, Object>> it = attributes.iterator();
+
+        while (it.hasNext()) {
+            Map.Entry<NodeKey, Object> attribute = it.next();
+            copy.put(attribute.getKey(), attribute.getValue());
+        }
+
+        return copy;
+    }
 }

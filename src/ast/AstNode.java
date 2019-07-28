@@ -22,4 +22,6 @@ public interface AstNode {
 
     public void reverseChildren();
 
+    public AstNode copy();
+
 }

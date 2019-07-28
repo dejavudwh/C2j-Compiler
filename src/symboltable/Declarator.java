@@ -43,7 +43,6 @@ public class Declarator {
         if (elements == null || index >= numberOfElements) {
             throw new Exception("element list is null or index out of range");
         }
-
         return elements.get(index);
     }
 

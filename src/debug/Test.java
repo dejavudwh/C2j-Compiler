@@ -29,7 +29,8 @@ public class Test {
         lrtp.parse();
     }
 
-    private void testInterpreter() {
+    private void testCodegen() {
+
     }
 
     public static void main(String[] args) {
