@@ -170,24 +170,14 @@ public class Symbol implements ValueSetter, GenerateValueSetter {
         if (Start.STARTTYPE == Start.CODEGEN) {
             ProgramGenerator generator = ProgramGenerator.getInstance();
 
-            if (BaseGenerate.resultOnStack == true) {
-                /*
-                 * 如果结果已经存在堆栈上了，那么赋值时无需再生成其他指令，例如j = i - 1
-                 * i-1 的结果会直接放置到堆栈顶部，因此我们只需要直接通过istore指令把堆栈顶部的数值存储到
-                 * 该变量所在的局部变量队列的位置即可
-                 */
+            if (BaseGenerate.resultOnStack) {
                 this.value = obj;
                 BaseGenerate.resultOnStack = false;
             } else if (obj instanceof ArrayValueSetter) {
-                /*
-                 * 处理 i = a[2] 这种用数组元素赋值的情形,此时要把数组元素的读取生成jvm字节码
-                 */
-
                 ArrayValueSetter setter = (ArrayValueSetter) obj;
                 Symbol symbol = setter.getSymbol();
                 Object index = setter.getIndex();
                 if (symbol.getSpecifierByType(Specifier.STRUCTURE) == null) {
-                    //如果是结构体数组，这里不做处理，留给下一步处理
                     if (index instanceof Symbol) {
                         ProgramGenerator.getInstance().readArrayElement(symbol, index);
                         if (((Symbol) index).getValue() != null) {
@@ -195,7 +185,6 @@ public class Symbol implements ValueSetter, GenerateValueSetter {
                             try {
                                 this.value = symbol.getDeclarator(Declarator.ARRAY).getElement(i);
                             } catch (Exception e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
                         }
@@ -204,15 +193,12 @@ public class Symbol implements ValueSetter, GenerateValueSetter {
                         try {
                             this.value = symbol.getDeclarator(Declarator.ARRAY).getElement(i);
                         } catch (Exception e) {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
 
                         ProgramGenerator.getInstance().readArrayElement(symbol, index);
                     }
                 }
-
-
             } else if (obj instanceof Symbol) {
                 Symbol symbol = (Symbol) obj;
                 this.value = symbol.value;
@@ -224,27 +210,17 @@ public class Symbol implements ValueSetter, GenerateValueSetter {
                 this.value = obj;
             }
 
-            //change here
-            if (this.value != null || BaseGenerate.isCompileMode == true) {
-                /*
-                 * 先判断该变量是否是一个结构体的成员变量，如果是，那么需要通过assignValueToStructMember来实现成员变量
-                 * 的赋值，如果不是，那么就直接通过IStore语句直接赋值
-                 */
-                if (this.isStructMember() == false) {
-                    int idx = generator.getLocalVariableIndex(this);
-                    if (generator.isPassingArguments() == false) {
-                        generator.emit(Instruction.ISTORE, "" + idx);
-                    }
-                } else {
-
-                    if (this.getStructSymbol().getValueSetter() != null) {
-                        generator.assignValueToStructMemberFromArray(this.getStructSymbol().getValueSetter(), this, this.value);
-                    } else {
-                        generator.assignValueToStructMember(this.getStructSymbol(), this, this.value);
-                    }
-
+            if (!this.isStructMember()) {
+                int idx = generator.getLocalVariableIndex(this);
+                if (!generator.isPassingArguments()) {
+                    generator.emit(Instruction.ISTORE, "" + idx);
                 }
-
+            } else {
+                if (this.getStructSymbol().getValueSetter() != null) {
+                    generator.assignValueToStructMemberFromArray(this.getStructSymbol().getValueSetter(), this, this.value);
+                } else {
+                    generator.assignValueToStructMember(this.getStructSymbol(), this, this.value);
+                }
             }
         }
     }

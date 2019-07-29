@@ -4,20 +4,25 @@ import ast.AstNode;
 import ast.NodeKey;
 import codegen.backend.Instruction;
 import codegen.backend.ProgramGenerator;
+import debug.ConsoleDebugColor;
 import parse.SyntaxProductionInit;
 import symboltable.*;
+
+/**
+ *
+ * @author dejavudwh isHudw
+ */
 
 public class BinaryGenerate extends BaseGenerate {
     @Override
     public Object generate(AstNode root) {
-    	executeChildren(root);
+    	generateChildren(root);
     	ProgramGenerator generator = ProgramGenerator.getInstance();
     	AstNode child;
     	int production = (int)root.getAttribute(NodeKey.PRODUCTION);
     	int val1 = 0, val2 = 0;
     	switch (production) {
     	case SyntaxProductionInit.Uanry_TO_Binary:
-    		
     		child = root.getChildren().get(0);
     		copyChild(root, child);
     		break;
@@ -26,7 +31,6 @@ public class BinaryGenerate extends BaseGenerate {
     	case SyntaxProductionInit.Binary_DivOp_Binary_TO_Binary:
     	case SyntaxProductionInit.Binary_Minus_Binary_TO_Binary:
     	case SyntaxProductionInit.Binary_Start_Binary_TO_Binary:
-    		
     		BaseGenerate.resultOnStack = true;
     		if (root.getChildren().get(0).getAttribute(NodeKey.VALUE) != null) {
     		    val1 = (Integer)root.getChildren().get(0).getAttribute(NodeKey.VALUE);
@@ -50,30 +54,28 @@ public class BinaryGenerate extends BaseGenerate {
    			   generator.emit(Instruction.SIPUSH, "" + val2);
    		    }
 
-    		
     		if (production == SyntaxProductionInit.Binary_Plus_Binary_TO_Binary) {
     			String text = root.getChildren().get(0).getAttribute(NodeKey.TEXT) + " plus " + root.getChildren().get(1).getAttribute(NodeKey.TEXT);
     			root.setAttribute(NodeKey.VALUE, val1 + val2);
     			root.setAttribute(NodeKey.TEXT,  text);
-        		System.out.println(text + " is " + (val1+val2) );	
+        		ConsoleDebugColor.outlnPurple(text + " is " + (val1+val2) );
         		ProgramGenerator.getInstance().emit(Instruction.IADD);
     		} else if (production ==  SyntaxProductionInit.Binary_Minus_Binary_TO_Binary) {
     			String text = root.getChildren().get(0).getAttribute(NodeKey.TEXT) + " minus " + root.getChildren().get(1).getAttribute(NodeKey.TEXT);
     			root.setAttribute(NodeKey.VALUE, val1 - val2);
     			root.setAttribute(NodeKey.TEXT,  text);
-        		System.out.println(text + " is " + (val1-val2) );	
+        		ConsoleDebugColor.outlnPurple(text + " is " + (val1-val2) );
         		ProgramGenerator.getInstance().emit(Instruction.ISUB);
     		} else if (production ==  SyntaxProductionInit.Binary_Start_Binary_TO_Binary) {
     			String text = root.getChildren().get(0).getAttribute(NodeKey.TEXT) + " * " + root.getChildren().get(1).getAttribute(NodeKey.TEXT);
     			root.setAttribute(NodeKey.VALUE, val1 * val2);
     			root.setAttribute(NodeKey.TEXT,  text);
-        		System.out.println(text + " is " + (val1 * val2) );
+        		ConsoleDebugColor.outlnPurple(text + " is " + (val1 * val2) );
         		
         		ProgramGenerator.getInstance().emit(Instruction.IMUL);
-    		}
-    		else {
+    		} else {
     			root.setAttribute(NodeKey.VALUE, val1 / val2);
-        		System.out.println( root.getChildren().get(0).getAttribute(NodeKey.TEXT) + " is divided by "
+        		ConsoleDebugColor.outlnPurple( root.getChildren().get(0).getAttribute(NodeKey.TEXT) + " is divided by "
         				+ root.getChildren().get(1).getAttribute(NodeKey.TEXT) + " and result is " + (val1/val2) );
         		ProgramGenerator.getInstance().emit(Instruction.IDIV);
     		}
@@ -83,7 +85,6 @@ public class BinaryGenerate extends BaseGenerate {
     		break;
     		
     	case SyntaxProductionInit.Binary_RelOP_Binary_TO_Binray:
-    		 //change here check null before convert to integer
     		 Object valObj = root.getChildren().get(0).getAttribute(NodeKey.VALUE);
     		 Object symObj = root.getChildren().get(0).getAttribute(NodeKey.SYMBOL);
     		 
@@ -126,20 +127,22 @@ public class BinaryGenerate extends BaseGenerate {
     		 case "==":
     			 root.setAttribute(NodeKey.VALUE, val1 == val2 ? 1 : 0);
     			 break;
+
     		 case "<":
-    			 //backend.emitString(Instruction.IF_ICMPGE.toString() + " " + branch);
     			 generator.setComparingCommand(Instruction.IF_ICMPGE.toString() + " " + branch);
     			 root.setAttribute(NodeKey.VALUE, val1 < val2? 1 : 0);
     			 break;
+
     		 case "<=":
     			 generator.setComparingCommand(Instruction.IF_ICMPGT.toString() + " " + branch);
     			 root.setAttribute(NodeKey.VALUE, val1 <= val2? 1 : 0);
     			 break;
+
     		 case ">":
-    			 //backend.emitString(Instruction.IF_ICMPLE.toString() + " " + branch);
     			 generator.setComparingCommand(Instruction.IF_ICMPLE.toString() + " " + branch);
     			 root.setAttribute(NodeKey.VALUE, val1 > val2? 1 : 0);
     			 break;
+
     		 case ">=":
     			 generator.setComparingCommand(Instruction.IF_ICMPLT.toString() + " " + branch);
     			 root.setAttribute(NodeKey.VALUE, val1 >= val2? 1 : 0);
@@ -148,11 +151,15 @@ public class BinaryGenerate extends BaseGenerate {
     		 case "!=":
     			 root.setAttribute(NodeKey.VALUE, val1 != val2? 1 : 0);
     			 break;
+
+    		 default:
+    		 	break;
     		 }
-    		 
     		
     		 break;
-    		 
+
+    	default:
+    		break;
     	
     	}
     	

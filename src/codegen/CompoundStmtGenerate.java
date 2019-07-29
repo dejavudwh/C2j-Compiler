@@ -6,8 +6,7 @@ public class CompoundStmtGenerate extends BaseGenerate {
 
 	@Override
 	public Object generate(AstNode root) {
-		
-		return executeChild(root, 0);
+		return generateChild(root, 0);
 	}
 
 }

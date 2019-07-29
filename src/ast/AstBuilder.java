@@ -63,7 +63,7 @@ public class AstBuilder {
                  * 而不要等到第一次读写数组时，才去为数组的创建生成jvm指令
                  */
                 node = NodeFactory.createICodeNode(Token.DEF);
-                symbol = (Symbol) valueStack.get(valueStack.size() - 2); //获得数组变量的Symbol对象
+                symbol = (Symbol) valueStack.get(valueStack.size() - 2);
                 node.setAttribute(NodeKey.SYMBOL, symbol);
                 break;
             case SyntaxProductionInit.Def_To_DefList:
@@ -79,7 +79,6 @@ public class AstBuilder {
             case SyntaxProductionInit.Number_TO_Unary:
             case SyntaxProductionInit.Name_TO_Unary:
             case SyntaxProductionInit.String_TO_Unary:
-
                 node = NodeFactory.createICodeNode(Token.UNARY);
                 if (production == SyntaxProductionInit.Name_TO_Unary) {
                     assignSymbolToNode(node, text);
@@ -87,6 +86,7 @@ public class AstBuilder {
 
                 node.setAttribute(NodeKey.TEXT, text);
                 break;
+
             case SyntaxProductionInit.Unary_LP_RP_TO_Unary:
                 node = NodeFactory.createICodeNode(Token.UNARY);
                 node.addChild(nodeStack.pop());
@@ -107,10 +107,9 @@ public class AstBuilder {
                 break;
 
             case SyntaxProductionInit.Unary_LB_Expr_RB_TO_Unary:
-                //访问或更改数组元素
                 node = NodeFactory.createICodeNode(Token.UNARY);
-                node.addChild(nodeStack.pop());  //EXPR
-                node.addChild(nodeStack.pop());  //UNARY
+                node.addChild(nodeStack.pop());
+                node.addChild(nodeStack.pop());
 
                 break;
 
@@ -143,7 +142,6 @@ public class AstBuilder {
                 node.addChild(nodeStack.pop());
                 break;
 
-
             case SyntaxProductionInit.Binary_RelOP_Binary_TO_Binray:
                 node = NodeFactory.createICodeNode(Token.BINARY);
                 node.addChild(nodeStack.pop());
@@ -160,13 +158,14 @@ public class AstBuilder {
                 node = NodeFactory.createICodeNode(Token.EXPR);
                 node.addChild(nodeStack.pop());
                 break;
+
             case SyntaxProductionInit.Expr_Semi_TO_Statement:
             case SyntaxProductionInit.CompountStmt_TO_Statement:
                 node = NodeFactory.createICodeNode(Token.STATEMENT);
                 node.addChild(nodeStack.pop());
                 break;
 
-            case SyntaxProductionInit.LocalDefs_TO_Statement: //change to compound statement
+            case SyntaxProductionInit.LocalDefs_TO_Statement:
                 node = NodeFactory.createICodeNode(Token.STATEMENT);
                 node.addChild(nodeStack.pop());
                 break;
@@ -199,14 +198,14 @@ public class AstBuilder {
 
             case SyntaxProductionInit.If_Test_Statement_TO_IFStatement:
                 node = NodeFactory.createICodeNode(Token.IF_STATEMENT);
-                node.addChild(nodeStack.pop()); //Test
-                node.addChild(nodeStack.pop()); //Statement
+                node.addChild(nodeStack.pop());
+                node.addChild(nodeStack.pop());
                 break;
 
             case SyntaxProductionInit.IfElseStatemnt_Else_Statemenet_TO_IfElseStatement:
                 node = NodeFactory.createICodeNode(Token.IF_ELSE_STATEMENT);
-                node.addChild(nodeStack.pop()); //IfStatement
-                node.addChild(nodeStack.pop()); // statement
+                node.addChild(nodeStack.pop());
+                node.addChild(nodeStack.pop());
                 break;
 
             case SyntaxProductionInit.While_LP_Test_Rp_TO_Statement:
@@ -245,7 +244,6 @@ public class AstBuilder {
                 break;
 
             case SyntaxProductionInit.NewName_TO_VarDecl:
-                //我们暂时不处理变量声明语句
                 nodeStack.pop();
                 break;
 

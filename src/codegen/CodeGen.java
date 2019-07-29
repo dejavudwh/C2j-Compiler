@@ -29,7 +29,7 @@ public class CodeGen implements Generate {
 		}
 		
 		GenerateFactory factory = GenerateFactory.getGenerateFactory();
-		Generate generate = factory.getExecutor(root);
+		Generate generate = factory.getGenerate(root);
 		generate.generate(root);
 		
 		return root;

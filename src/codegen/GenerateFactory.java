@@ -18,7 +18,7 @@ public class GenerateFactory {
     	return generateFactory;
     }
     
-    public Generate getExecutor(AstNode node) {
+    public Generate getGenerate(AstNode node) {
     	
     	if (node == null) {
     		return null;

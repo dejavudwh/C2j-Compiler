@@ -14,7 +14,7 @@ public class OptExprGenerate extends BaseGenerate {
 			return root;
 			
 		case SyntaxProductionInit.Expr_Semi_TO_OptExpr:
-			return executeChild(root, 0);
+			return generateChild(root, 0);
 			
 		default:
 				return root;

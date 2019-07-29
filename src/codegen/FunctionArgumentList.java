@@ -3,6 +3,11 @@ package codegen;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ *
+ * @author dejavudwh isHudw
+ */
+
 public class FunctionArgumentList {
     private static FunctionArgumentList argumentList = null;
     private ArrayList<Object> funcArgList = new ArrayList<Object>();
@@ -26,7 +31,7 @@ public class FunctionArgumentList {
     
     public ArrayList<Object> getFuncArgList(boolean reverse) {
     	
-    	if (reverse == true) {
+    	if (reverse) {
     		Collections.reverse(funcArgList);
     	}
     	
@@ -34,7 +39,7 @@ public class FunctionArgumentList {
     }
     
     public ArrayList<Object> getFuncArgSymsList(boolean reverse) {
-    	if (reverse == true) {
+    	if (reverse) {
     		Collections.reverse(argSymList);
     	}
     	

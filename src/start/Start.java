@@ -35,7 +35,6 @@ public class Start {
     }
 
     public void codegen() {
-        BaseGenerate.isCompileMode = true;
         parse();
         ProgramGenerator generator = ProgramGenerator.getInstance();
         CodeGen codegen = CodeGen.getInstance();

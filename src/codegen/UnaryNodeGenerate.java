@@ -15,6 +15,9 @@ import interpreter.ValueSetter;
 import parse.SyntaxProductionInit;
 import symboltable.*;
 
+/**
+ * @author dejavudwh isHudw
+ */
 
 public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver {
     private Symbol structObjSymbol = null;
@@ -22,9 +25,8 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
 
     @Override
     public Object generate(AstNode root) {
-
         int production = (Integer) root.getAttribute(NodeKey.PRODUCTION);
-        executeChildren(root);
+        generateChildren(root);
 
         String text;
         Symbol symbol;
@@ -37,10 +39,10 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                 boolean isFloat = text.indexOf('.') != -1;
                 if (isFloat) {
                     value = Float.valueOf(text);
-                    root.setAttribute(NodeKey.VALUE, Float.valueOf(text));
+                    root.setAttribute(NodeKey.VALUE, value);
                 } else {
                     value = Integer.valueOf(text);
-                    root.setAttribute(NodeKey.VALUE, Integer.valueOf(text));
+                    root.setAttribute(NodeKey.VALUE, value);
                 }
                 break;
 
@@ -49,9 +51,6 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                 if (symbol != null) {
                     root.setAttribute(NodeKey.VALUE, symbol.getValue());
                     root.setAttribute(NodeKey.TEXT, symbol.getName());
-
-                    AstNode func = AstBuilder.getInstance().getFunctionNodeByName(symbol.getName());
-
                 }
                 break;
 
@@ -65,7 +64,6 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                 symbol = (Symbol) child.getAttribute(NodeKey.SYMBOL);
 
                 child = root.getChildren().get(1);
-                //change here check null before convert to integer
                 int index = 0;
                 if (child.getAttribute(NodeKey.VALUE) != null) {
                     index = (Integer) child.getAttribute(NodeKey.VALUE);
@@ -75,10 +73,9 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                 try {
                     Declarator declarator = symbol.getDeclarator(Declarator.ARRAY);
                     if (declarator != null) {
-
                         Object val = declarator.getElement((int) index);
                         root.setAttribute(NodeKey.VALUE, val);
-                        ArrayValueSetter setter = null;
+                        ArrayValueSetter setter;
                         if (idxObj == null) {
                             setter = new ArrayValueSetter(symbol, index);
                         } else {
@@ -92,14 +89,12 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                     Declarator pointer = symbol.getDeclarator(Declarator.POINTER);
                     if (pointer != null) {
                         setPointerValue(root, symbol, index);
-                        //create a PointerSetter
                         PointerValueSetter pv = new PointerValueSetter(symbol, index);
                         root.setAttribute(NodeKey.SYMBOL, pv);
                         root.setAttribute(NodeKey.TEXT, symbol.getName());
                     }
-
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                     System.exit(1);
                 }
                 break;
@@ -110,25 +105,17 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                 Integer val = (Integer) symbol.getValue();
                 ValueSetter setter;
                 setter = (ValueSetter) symbol;
-                //change here
                 int i = generator.getLocalVariableIndex(symbol);
                 generator.emit(Instruction.ILOAD, "" + i);
                 generator.emit(Instruction.SIPUSH, "" + 1);
 
                 try {
                     if (production == SyntaxProductionInit.Unary_Incop_TO_Unary) {
-                        if (BaseGenerate.isCompileMode == false) {
-                            setter.setValue(val + 1);
-                        }
                         generator.emit(Instruction.IADD);
                     } else {
-                        if (BaseGenerate.isCompileMode == false) {
-                            setter.setValue(val - 1);
-                        }
                         generator.emit(Instruction.ISUB);
                     }
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                     System.err.println("Runtime Error: Assign Value Error");
                 }
@@ -141,8 +128,9 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                 break;
 
             case SyntaxProductionInit.Start_Unary_TO_Unary:
+                //Compilation to bytecode does not support Pointers
                 child = root.getChildren().get(0);
-                int addr = (Integer) child.getAttribute(NodeKey.VALUE); //get mem addr
+                int addr = (Integer) child.getAttribute(NodeKey.VALUE);
                 symbol = (Symbol) child.getAttribute(NodeKey.SYMBOL);
 
                 MemoryHeap memHeap = MemoryHeap.getInstance();
@@ -160,17 +148,12 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
 
             case SyntaxProductionInit.Unary_LP_RP_TO_Unary:
             case SyntaxProductionInit.Unary_LP_ARGS_RP_TO_Unary:
-                //先获得函数名
                 boolean reEntry = false;
                 String funcName = (String) root.getChildren().get(0).getAttribute(NodeKey.TEXT);
-                //change here
-                /*
-                 * 如果函数名被记录过，那表明现在的函数调用其实是递归调用
-                 */
+
                 if (funcName != "" && funcName.equals(BaseGenerate.funcName)) {
                     reEntry = true;
                 }
-
 
                 ArrayList<Object> argList = null;
                 ArrayList<Object> symList = null;
@@ -183,14 +166,8 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                     FunctionArgumentList.getFunctionArgumentList().setFuncArgSymbolList(symList);
                 }
 
-                //找到函数执行树头节点
                 AstNode func = AstBuilder.getInstance().getFunctionNodeByName(funcName);
                 if (func != null) {
-                    //change here push parameters before calling function
-                    /*
-                     * 函数调用时，把当前被调用的函数名记录下来，如果函数体内发送递归调用，那么编译器还会再次进入到
-                     * 这里，如果进入时判断到函数名跟我们这里存储的函数名一致，那表明发生了递归调用。
-                     */
                     BaseGenerate.funcName = funcName;
                     int count = 0;
                     while (count < argList.size()) {
@@ -211,12 +188,8 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
 
                         count++;
                     }
-                    //problem here handle reentry
-                    if (BaseGenerate.isCompileMode == true && reEntry == false) {
-                        /*
-                         * 在编译状态下，遇到函数自我递归调用则不需要再次为函数生成代码，只需要生成invoke指令即可
-                         */
-                        Generate generate = GenerateFactory.getGenerateFactory().getExecutor(func);
+                    if (!reEntry) {
+                        Generate generate = GenerateFactory.getGenerateFactory().getGenerate(func);
                         ProgramGenerator.getInstance().setInstructionBuffered(true);
                         generate.generate(func);
                         symbol = (Symbol) root.getChildren().get(0).getAttribute(NodeKey.SYMBOL);
@@ -227,35 +200,28 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                     }
                     compileFunctionCall(funcName);
 
-
                     Object returnVal = func.getAttribute(NodeKey.VALUE);
                     if (returnVal != null) {
                         System.out.println("function call with name " + funcName + " has return value that is " + returnVal.toString());
                         root.setAttribute(NodeKey.VALUE, returnVal);
                     }
-
                 } else {
                     ClibCall libCall = ClibCall.getInstance();
-                    if (libCall.isAPICall(funcName)) {
-                        Object obj = libCall.invokeAPI(funcName);
+                    if (libCall.isApiCall(funcName)) {
+                        Object obj = libCall.invokeApi(funcName);
                         root.setAttribute(NodeKey.VALUE, obj);
                     }
                 }
 
-
                 break;
 
             case SyntaxProductionInit.Unary_StructOP_Name_TO_Unary:
-                /*
-                 * 当编译器读取到myTag.x 这种类型的语句时，会走入到这里
-                 */
                 child = root.getChildren().get(0);
                 String fieldName = (String) root.getAttribute(NodeKey.TEXT);
                 Object object = child.getAttribute(NodeKey.SYMBOL);
                 boolean isStructArray = false;
 
                 if (object instanceof ArrayValueSetter) {
-                    //这里表示正在读取结构体数组,先构造结构体数组
                     symbol = getStructSymbolFromStructArray(object);
                     symbol.addValueSetter(object);
                     isStructArray = true;
@@ -263,27 +229,20 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                     symbol = (Symbol) child.getAttribute(NodeKey.SYMBOL);
                 }
 
-                //先把结构体变量的作用范围设置为定义它的函数名
-                if (isStructArray == true) {
-                    //把结构体数组symbol对象的作用域范围设置为包含它的函数
+                if (isStructArray) {
                     ArrayValueSetter vs = (ArrayValueSetter) object;
                     Symbol structArray = vs.getSymbol();
                     structArray.addScope(ProgramGenerator.getInstance().getCurrentFuncName());
                 } else {
                     symbol.addScope(ProgramGenerator.getInstance().getCurrentFuncName());
                 }
-                //如果是第一次访问结构体成员变量,那么将结构体声明成一个类
+
                 ProgramGenerator.getInstance().putStructToClassDeclaration(symbol);
 
                 if (isSymbolStructPointer(symbol)) {
                     copyBetweenStructAndMem(symbol, false);
                 }
 
-                /*
-                 * 假设当前解析的语句是myTag.x, 那么args对应的就是变量x
-                 * 通过调用setStructParent 把args对应的变量x 跟包含它的结构体变量myTag
-                 * 关联起来
-                 */
                 Symbol args = symbol.getArgList();
                 while (args != null) {
                     if (args.getName().equals(fieldName)) {
@@ -298,10 +257,7 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                     System.err.println("access a filed not in struct object!");
                     System.exit(1);
                 }
-                /*
-                 * 把读取结构体成员变量转换成对应的java汇编代码，也就是使用getfield指令把对应的成员变量的值读取出来，然后压入堆栈顶部
-                 */
-                //TODO 需要区分结构体是否来自于结构体数组
+
                 if (args.getValue() != null) {
                     ProgramGenerator.getInstance().readValueFromStructMember(symbol, args);
                 }
@@ -309,7 +265,7 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                 root.setAttribute(NodeKey.SYMBOL, args);
                 root.setAttribute(NodeKey.VALUE, args.getValue());
 
-                if (isSymbolStructPointer(symbol) == true) {
+                if (isSymbolStructPointer(symbol)) {
                     checkValidPointer(symbol);
                     structObjSymbol = symbol;
                     monitorSymbol = args;
@@ -318,7 +274,6 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
                 } else {
                     structObjSymbol = null;
                 }
-
                 break;
 
             default:
@@ -344,17 +299,14 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
         try {
             struct = (Symbol) declarator.getElement(idx);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         if (struct == null) {
             struct = symbol.copy();
             try {
                 declarator.addElement(idx, (Object) struct);
-                //通过指令为数组中的某个下标处创建结构体实例
                 ProgramGenerator.getInstance().createInstanceForStructArray(symbol, idx);
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -421,7 +373,7 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
             return;
         }
 
-        Symbol symbol = null;
+        Symbol symbol;
         if (object instanceof ValueSetter) {
             symbol = ((ValueSetter) object).getSymbol();
         } else {
@@ -447,7 +399,7 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
             Symbol sym = stack.pop();
 
             try {
-                if (isFromStructToMem == true) {
+                if (isFromStructToMem) {
                     offset += writeStructVariablesToMem(sym, mems, offset);
                 } else {
                     offset += writeMemToStructVariables(sym, mems, offset);
@@ -483,10 +435,8 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
         }
     }
 
-
     private int writeMemToStructVariables(Symbol symbol, byte[] mem, int offset) throws Exception {
         if (symbol.getArgList() != null) {
-            //struct variable, copy mem to struct recursively
             return writeMemToStructVariables(symbol, mem, offset);
         }
 
@@ -535,7 +485,6 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
             try {
                 declarator.addElement(i, val);
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -577,6 +526,5 @@ public class UnaryNodeGenerate extends BaseGenerate implements GenerateReceiver 
 
         return stack;
     }
-
 
 }

@@ -5,20 +5,23 @@ import java.util.Map;
 import interpreter.ValueSetter;
 import symboltable.*;
 
+/**
+ *
+ * @author dejavudwh isHudw
+ */
 
 public class PointerValueSetter implements ValueSetter {
 	private Symbol symbol;
 	private int index = 0;
 	
 	@Override
-	public void setValue(Object obj) throws Exception {
+	public void setValue(Object obj) {
 		int addr = (Integer)symbol.getValue();
 		MemoryHeap memHeap = MemoryHeap.getInstance();
 		Map.Entry<Integer, byte[]> entry = memHeap.getMem(addr);
 		byte[] content = entry.getValue();
 		Integer i = (Integer)obj;
 		try {
-			//if it is a struct pointer, then we write one byte each time
 			int sz = symbol.getByteSize();
 			if (symbol.getDeclarator(Declarator.POINTER) != null &&
 					symbol.getArgList() != null) {
@@ -47,7 +50,6 @@ public class PointerValueSetter implements ValueSetter {
 
 	@Override
 	public Symbol getSymbol() {
-		// TODO Auto-generated method stub
 		return symbol;
 	}
 }

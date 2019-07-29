@@ -8,20 +8,20 @@ import java.util.ArrayList;
 
 public interface AstNode {
 
-    public AstNode addChild(AstNode node);
+    AstNode addChild(AstNode node);
 
-    public AstNode getParent();
+    AstNode getParent();
 
-    public ArrayList<AstNode> getChildren();
+    ArrayList<AstNode> getChildren();
 
-    public void setAttribute(NodeKey key, Object value);
+    void setAttribute(NodeKey key, Object value);
 
-    public Object getAttribute(NodeKey key);
+    Object getAttribute(NodeKey key);
 
-    public boolean isChildrenReverse();
+    boolean isChildrenReverse();
 
-    public void reverseChildren();
+    void reverseChildren();
 
-    public AstNode copy();
+    AstNode copy();
 
 }
