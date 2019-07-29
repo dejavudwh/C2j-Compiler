@@ -44,24 +44,19 @@ public class AstBuilder {
         Symbol symbol = null;
         AstNode child = null;
 
-//        if (Start.STARTTYPE == Start.INTERPRETER) {
-//            int p1 = SyntaxProductionInit.Specifiers_DeclList_Semi_TO_Def;
-//            int p2 = SyntaxProductionInit.Def_To_DefList;
-//            int p3 = SyntaxProductionInit.DefList_Def_TO_DefList;
-//
-//            boolean isReturn = production == p1 || production == p2 || production == p3;
-//            if (isReturn) {
-//                return null;
-//            }
-//        }
+        if (Start.STARTTYPE == Start.INTERPRETER) {
+            int p1 = SyntaxProductionInit.Specifiers_DeclList_Semi_TO_Def;
+            int p2 = SyntaxProductionInit.Def_To_DefList;
+            int p3 = SyntaxProductionInit.DefList_Def_TO_DefList;
+
+            boolean isReturn = production == p1 || production == p2 || production == p3;
+            if (isReturn) {
+                return null;
+            }
+        }
 
         switch (production) {
             case SyntaxProductionInit.Specifiers_DeclList_Semi_TO_Def:
-                /*
-                 * 当解析到变量定义时,例如int a[3]; 走到这里
-                 * 我们为变量定义增加一个执行节点，目的是在数组变量定义出现时，立马生成jvm指令，
-                 * 而不要等到第一次读写数组时，才去为数组的创建生成jvm指令
-                 */
                 node = NodeFactory.createICodeNode(Token.DEF);
                 symbol = (Symbol) valueStack.get(valueStack.size() - 2);
                 node.setAttribute(NodeKey.SYMBOL, symbol);
@@ -167,7 +162,9 @@ public class AstBuilder {
 
             case SyntaxProductionInit.LocalDefs_TO_Statement:
                 node = NodeFactory.createICodeNode(Token.STATEMENT);
-                node.addChild(nodeStack.pop());
+                if (Start.STARTTYPE == Start.CODEGEN) {
+                    node.addChild(nodeStack.pop());
+                }
                 break;
 
             case SyntaxProductionInit.Statement_TO_StmtList:
