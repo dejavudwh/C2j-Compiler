@@ -84,6 +84,7 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
 
                 } catch (Exception e) {
                     System.err.println(e.getMessage());
+                    e.printStackTrace();
                     System.exit(1);
                 }
                 break;

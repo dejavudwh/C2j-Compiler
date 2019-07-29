@@ -1,4 +1,4 @@
-void quicksort(int A[10], int p, int r) {
+void quicksort(int a[10], int p, int r) {
     int x;
     int i;
     i = p - 1;
@@ -7,23 +7,23 @@ void quicksort(int A[10], int p, int r) {
     int v;
     v = r - 1;
     if (p < r) {
-        x = A[r];
+        x = a[r];
         for (j = p; j <= v; j++) {
-            if (A[j] <= x) {
+            if (a[j] <= x) {
                 i++;
-                t = A[i];
-                A[i] = A[j];
-                A[j] = t;
+                t = a[i];
+                a[i] = a[j];
+                a[j] = t;
             }
         }
         v = i + 1;
-        t = A[v];
-        A[v] = A[r];
-        A[r] = t;
+        t = a[v];
+        a[v] = a[r];
+        a[r] = t;
         t = v - 1;
-        quicksort(A, p, t);
+        quicksort(a, p, t);
         t = v + 1;
-        quicksort(A, t, r);
+        quicksort(a, t, r);
     }
 }
 void main () {

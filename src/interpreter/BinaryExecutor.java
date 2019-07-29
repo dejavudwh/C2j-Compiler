@@ -4,6 +4,7 @@ import ast.AstNode;
 import ast.NodeKey;
 import debug.ConsoleDebugColor;
 import parse.SyntaxProductionInit;
+import symboltable.Symbol;
 
 /**
  * @author dejavudwh isHudw
@@ -46,7 +47,6 @@ public class BinaryExecutor extends BaseExecutor {
                 break;
 
             case SyntaxProductionInit.Binary_RelOP_Binary_TO_Binray:
-                System.out.println( root.getChildren().get(0).getAttribute(NodeKey.TEXT));
                 val1 = (Integer) root.getChildren().get(0).getAttribute(NodeKey.VALUE);
                 String operator = (String) root.getChildren().get(1).getAttribute(NodeKey.TEXT);
                 val2 = (Integer) root.getChildren().get(2).getAttribute(NodeKey.VALUE);
