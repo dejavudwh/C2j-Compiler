@@ -2,7 +2,12 @@ package codegen;
 
 import ast.AstNode;
 
-public class CodeGen implements Executor{
+/**
+ *
+ * @author dejavudwh isHudw
+ */
+
+public class CodeGen implements Generate {
 
 	private static CodeGen codegen = null;
 	public static CodeGen getInstance() {
@@ -18,14 +23,14 @@ public class CodeGen implements Executor{
 	}
 	
 	@Override
-	public Object Execute(AstNode root) {
+	public Object generate(AstNode root) {
 		if (root == null) {
 			return null;
 		}
 		
-		ExecutorFactory factory = ExecutorFactory.getExecutorFactory();
-		Executor executor = factory.getExecutor(root);
-		executor.Execute(root);
+		GenerateFactory factory = GenerateFactory.getGenerateFactory();
+		Generate generate = factory.getExecutor(root);
+		generate.generate(root);
 		
 		return root;
 	}

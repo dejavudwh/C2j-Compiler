@@ -1,6 +1,6 @@
 package codegen;
 
-import codegen.generator.ProgramGenerator;
+import codegen.backend.ProgramGenerator;
 import debug.ConsoleDebugColor;
 import interpreter.ValueSetter;
 import symboltable.*;

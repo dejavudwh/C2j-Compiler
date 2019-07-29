@@ -30,7 +30,7 @@ public class FunctDeclExecutor extends BaseExecutor {
                 initArgumentList(args);
 
                 if (args == null || argsList == null || argsList.isEmpty()) {
-                    System.err.println("Execute function with arg list but arg list is null");
+                    System.err.println("generate function with arg list but arg list is null");
                     System.exit(1);
                 }
                 break;

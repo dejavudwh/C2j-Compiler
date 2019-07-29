@@ -32,7 +32,7 @@ public abstract class BaseExecutor implements Executor {
             if (executor != null) {
                 executor.execute(child);
             } else {
-                System.err.println("Not suitable Executor found, node is: " + child.toString());
+                System.err.println("Not suitable Generate found, node is: " + child.toString());
             }
 
             executorBrocaster.brocastAfterExecution(child);

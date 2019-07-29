@@ -1,9 +1,9 @@
 package start;
 
 import ast.AstBuilder;
-import codegen.BaseExecutor;
+import codegen.BaseGenerate;
 import codegen.CodeGen;
-import codegen.generator.ProgramGenerator;
+import codegen.backend.ProgramGenerator;
 import interpreter.Interpreter;
 import lexer.Lexer;
 import parse.LRStateTableParser;
@@ -35,13 +35,13 @@ public class Start {
     }
 
     public void codegen() {
-        BaseExecutor.isCompileMode = true;
+        BaseGenerate.isCompileMode = true;
         parse();
         ProgramGenerator generator = ProgramGenerator.getInstance();
         CodeGen codegen = CodeGen.getInstance();
         AstBuilder astBuilder = AstBuilder.getInstance();
         generator.generateHeader();
-        codegen.Execute(astBuilder.getSyntaxTreeRoot());
+        codegen.generate(astBuilder.getSyntaxTreeRoot());
         generator.finish();
     }
 

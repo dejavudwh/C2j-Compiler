@@ -1,10 +1,10 @@
 package symboltable;
 
 import codegen.ArrayValueSetter;
-import codegen.BaseExecutor;
-import codegen.generator.Instruction;
-import codegen.generator.ProgramGenerator;
-import codegen.IValueSetter;
+import codegen.BaseGenerate;
+import codegen.backend.Instruction;
+import codegen.backend.ProgramGenerator;
+import codegen.GenerateValueSetter;
 import debug.ConsoleDebugColor;
 import interpreter.ValueSetter;
 import parse.LRStateTableParser;
@@ -16,7 +16,7 @@ import start.Start;
  * @author dejavudwh isHudw
  */
 
-public class Symbol implements ValueSetter, IValueSetter {
+public class Symbol implements ValueSetter, GenerateValueSetter {
     public String name;
     String rname;
 
@@ -170,14 +170,14 @@ public class Symbol implements ValueSetter, IValueSetter {
         if (Start.STARTTYPE == Start.CODEGEN) {
             ProgramGenerator generator = ProgramGenerator.getInstance();
 
-            if (BaseExecutor.resultOnStack == true) {
+            if (BaseGenerate.resultOnStack == true) {
                 /*
                  * 如果结果已经存在堆栈上了，那么赋值时无需再生成其他指令，例如j = i - 1
                  * i-1 的结果会直接放置到堆栈顶部，因此我们只需要直接通过istore指令把堆栈顶部的数值存储到
                  * 该变量所在的局部变量队列的位置即可
                  */
                 this.value = obj;
-                BaseExecutor.resultOnStack = false;
+                BaseGenerate.resultOnStack = false;
             } else if (obj instanceof ArrayValueSetter) {
                 /*
                  * 处理 i = a[2] 这种用数组元素赋值的情形,此时要把数组元素的读取生成jvm字节码
@@ -225,7 +225,7 @@ public class Symbol implements ValueSetter, IValueSetter {
             }
 
             //change here
-            if (this.value != null || BaseExecutor.isCompileMode == true) {
+            if (this.value != null || BaseGenerate.isCompileMode == true) {
                 /*
                  * 先判断该变量是否是一个结构体的成员变量，如果是，那么需要通过assignValueToStructMember来实现成员变量
                  * 的赋值，如果不是，那么就直接通过IStore语句直接赋值

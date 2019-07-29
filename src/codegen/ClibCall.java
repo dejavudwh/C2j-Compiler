@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import codegen.generator.Instruction;
-import codegen.generator.ProgramGenerator;
+import codegen.backend.Instruction;
+import codegen.backend.ProgramGenerator;
 import symboltable.*;
 
 public class ClibCall {
