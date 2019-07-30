@@ -76,10 +76,10 @@ public class Start {
 
         Start start = new Start();
         int mode = 1;
-        boolean debug = true;
+        boolean debug = false;
         String filePath = "testInput.c";
-        if ("interpreter".equals(modeParam) || "i".equals(modeParam)) {
-            mode = 1;
+        if ("codegen".equals(modeParam) || "c".equals(modeParam)) {
+            mode = 2;
         }
 
         if (debugParam != null) {
