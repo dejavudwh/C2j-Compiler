@@ -1,5 +1,7 @@
 package input;
 
+import start.Start;
+
 import java.io.*;
 
 /**
@@ -14,7 +16,7 @@ public class DiskFileHandler implements FileHandler {
     @Override
     public void open() {
         //TODO File path selection and Actually read directly into the file
-        File file = new File("testInput.c");
+        File file = new File(Start.FILEPATH);
         try {
             String encoding = "UTF-8";
             InputStreamReader read = new InputStreamReader(

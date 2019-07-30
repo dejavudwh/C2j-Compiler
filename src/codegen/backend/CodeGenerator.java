@@ -7,13 +7,13 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 
 public class CodeGenerator {
-    private PrintWriter assemblyFile;
+    private PrintWriter bytecodeFile;
     private int instructionCount = 0;
     private boolean buffered = false;
     private boolean classDefine = false;
     private String bufferedContent = "";
     private String classDefinition = "";
-    protected static String programName = "CSourceToJava";
+    protected static String programName = "C2Bytecode";
     private HashMap<String, String> nameToDeclaration = new HashMap<>();
 
     public void setNameAndDeclaration(String name, String declaration) {
@@ -37,7 +37,7 @@ public class CodeGenerator {
         String assemblyFileName = programName + ".j";
 
         try {
-            assemblyFile = new PrintWriter(new PrintStream(new
+            bytecodeFile = new PrintWriter(new PrintStream(new
                     File(assemblyFileName)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -55,22 +55,22 @@ public class CodeGenerator {
             return;
         }
 
-        assemblyFile.print(s);
-        assemblyFile.flush();
+        bytecodeFile.print(s);
+        bytecodeFile.flush();
 
     }
 
     protected void emitBufferedContent() {
         if (!bufferedContent.isEmpty()) {
-            assemblyFile.println(bufferedContent);
-            assemblyFile.flush();
+            bytecodeFile.println(bufferedContent);
+            bytecodeFile.flush();
         }
     }
 
     protected void emitClassDefinition() {
         if (!classDefinition.isEmpty()) {
-            assemblyFile.println(classDefinition);
-            assemblyFile.flush();
+            bytecodeFile.println(classDefinition);
+            bytecodeFile.flush();
         }
     }
 
@@ -85,8 +85,8 @@ public class CodeGenerator {
             return;
         }
 
-        assemblyFile.println(directive.toString());
-        assemblyFile.flush();
+        bytecodeFile.println(directive.toString());
+        bytecodeFile.flush();
         ++instructionCount;
     }
 
@@ -101,8 +101,8 @@ public class CodeGenerator {
             return;
         }
 
-        assemblyFile.println(directive.toString() + " " + operand);
-        assemblyFile.flush();
+        bytecodeFile.println(directive.toString() + " " + operand);
+        bytecodeFile.flush();
         ++instructionCount;
     }
 
@@ -117,7 +117,7 @@ public class CodeGenerator {
             return;
         }
 
-        assemblyFile.println(directive.toString() + " " + operand);
+        bytecodeFile.println(directive.toString() + " " + operand);
         ++instructionCount;
     }
 
@@ -132,7 +132,7 @@ public class CodeGenerator {
             return;
         }
 
-        assemblyFile.println(directive.toString() + " " + operand1 + " " + operand2);
+        bytecodeFile.println(directive.toString() + " " + operand1 + " " + operand2);
         ++instructionCount;
     }
 
@@ -147,7 +147,7 @@ public class CodeGenerator {
             return;
         }
 
-        assemblyFile.println(directive.toString() + " " + operand1 + " " + operand2 + " " + operand3);
+        bytecodeFile.println(directive.toString() + " " + operand1 + " " + operand2 + " " + operand3);
         ++instructionCount;
     }
 
@@ -162,8 +162,8 @@ public class CodeGenerator {
             return;
         }
 
-        assemblyFile.println("\t" + opcode.toString());
-        assemblyFile.flush();
+        bytecodeFile.println("\t" + opcode.toString());
+        bytecodeFile.flush();
         ++instructionCount;
     }
 
@@ -178,8 +178,8 @@ public class CodeGenerator {
             return;
         }
 
-        assemblyFile.println("\t" + opcode.toString() + "\t" + operand);
-        assemblyFile.flush();
+        bytecodeFile.println("\t" + opcode.toString() + "\t" + operand);
+        bytecodeFile.flush();
         ++instructionCount;
     }
 
@@ -194,12 +194,12 @@ public class CodeGenerator {
             return;
         }
 
-        assemblyFile.println();
-        assemblyFile.flush();
+        bytecodeFile.println();
+        bytecodeFile.flush();
     }
 
     public void finish() {
-        assemblyFile.close();
+        bytecodeFile.close();
     }
 
 

@@ -4,6 +4,7 @@ import ast.AstBuilder;
 import interpreter.Interpreter;
 import lexer.Lexer;
 import parse.*;
+import start.Start;
 
 
 /**
@@ -34,5 +35,7 @@ public class Test {
     }
 
     public static void main(String[] args) {
+        Start start = new Start();
+        start.start();
     }
 }

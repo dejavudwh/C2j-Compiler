@@ -9,6 +9,9 @@ import lexer.Lexer;
 import parse.LRStateTableParser;
 import parse.StateNodeManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author dejavudwh isHudw
@@ -18,7 +21,11 @@ public class Start {
     public static final int INTERPRETER = 1;
     public static final int CODEGEN = 2;
 
-    public static int STARTTYPE = 2;
+    public static boolean DEBUG = false;
+
+    public static String FILEPATH = "testInput.c";
+
+    public static int STARTTYPE = 1;
 
     public void parse() {
         StateNodeManager snm = StateNodeManager.getInstance();
@@ -44,12 +51,46 @@ public class Start {
         generator.finish();
     }
 
-    public static void main(String[] args) {
-        Start start = new Start();
+    public void start() {
         if (STARTTYPE == Start.INTERPRETER) {
-            start.interpreter();
+            interpreter();
         } else if (STARTTYPE == Start.CODEGEN) {
-            start.codegen();
+            codegen();
         }
+    }
+
+    public void setLaunchParam(int type, String filePath, boolean debug) {
+        STARTTYPE = type;
+        FILEPATH = filePath;
+        DEBUG = debug;
+    }
+
+    public static void main(String[] args) {
+        Map<String,String> map = new HashMap<>();
+        for(int i = 0; i < args.length; i += 2) {
+            map.put(args[i], args[i + 1]);
+        }
+        String modeParam = map.get("-m");
+        String debugParam = map.get("-d");
+        String filepathParam = map.get("-f");
+
+        Start start = new Start();
+        int mode = 1;
+        boolean debug = true;
+        String filePath = "testInput.c";
+        if ("interpreter".equals(modeParam) || "i".equals(modeParam)) {
+            mode = 1;
+        }
+
+        if (debugParam != null) {
+            debug = true;
+        }
+
+        if (filepathParam != null) {
+            filePath = filepathParam;
+        }
+
+        start.setLaunchParam(mode, filePath, debug);
+        start.start();
     }
 }
