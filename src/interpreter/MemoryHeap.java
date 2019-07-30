@@ -1,12 +1,19 @@
 package interpreter;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+/**
+ *
+ * @author dejavudwh isHudw
+ */
 
 public class MemoryHeap {
     private static int initAddr = 10000;
     private static MemoryHeap instance = null;
-    private static HashMap<Integer, byte[]> memMap = new HashMap<>();
+    public static HashMap<Integer, byte[]> memMap = new HashMap<>();
 
     private MemoryHeap() {
     }

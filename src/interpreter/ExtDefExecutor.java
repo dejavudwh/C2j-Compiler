@@ -10,7 +10,6 @@ import symboltable.TypeSystem;
 import java.util.ArrayList;
 
 /**
- *
  * @author dejavudwh isHudw
  */
 
@@ -22,11 +21,11 @@ public class ExtDefExecutor extends BaseExecutor {
     @Override
     public Object execute(AstNode root) {
         this.root = root;
-        int production = (Integer)root.getAttribute(NodeKey.PRODUCTION);
+        int production = (Integer) root.getAttribute(NodeKey.PRODUCTION);
         switch (production) {
             case SyntaxProductionInit.OptSpecifiers_FunctDecl_CompoundStmt_TO_ExtDef:
                 AstNode child = root.getChildren().get(0);
-                funcName = (String)child.getAttribute(NodeKey.TEXT);
+                funcName = (String) child.getAttribute(NodeKey.TEXT);
                 root.setAttribute(NodeKey.TEXT, funcName);
                 saveArgs();
                 executeChild(root, 0);
@@ -68,7 +67,7 @@ public class ExtDefExecutor extends BaseExecutor {
         int count = 0;
 
         while (args != null && count < argsList.size()) {
-            ValueSetter setter = (ValueSetter)args.get(count);
+            ValueSetter setter = (ValueSetter) args.get(count);
             try {
                 Object value = argsList.get(count);
                 setter.setValue(value);

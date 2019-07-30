@@ -8,8 +8,10 @@ import parse.SyntaxProductionInit;
 import symboltable.Declarator;
 import symboltable.Symbol;
 
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Stack;
 
@@ -76,7 +78,7 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
                     Declarator pointer = symbol.getDeclarator(Declarator.POINTER);
                     if (pointer != null) {
                         setPointerValue(root, symbol, index);
-                        //create a PointerSetter
+
                         PointerValueSetter pv = new PointerValueSetter(symbol, index);
                         root.setAttribute(NodeKey.SYMBOL, pv);
                         root.setAttribute(NodeKey.TEXT, symbol.getName());
@@ -208,13 +210,14 @@ public class UnaryNodeExecutor extends BaseExecutor implements ExecutorReceiver 
         Map.Entry<Integer, byte[]> entry = memHeap.getMem(addr);
         byte[] content = entry.getValue();
         if (symbol.getByteSize() == 1) {
-            root.setAttribute(NodeKey.VALUE, content[index]);
+            root.setAttribute(NodeKey.VALUE, content[index * 4]);
         } else {
             ByteBuffer buffer = ByteBuffer.allocate(4);
-            buffer.put(content, index, 4);
+            buffer.put(content, index * 4, 4);
             buffer.flip();
             int v = buffer.getInt();
             root.setAttribute(NodeKey.VALUE, v);
+            ConsoleDebugColor.outlnBlue("mem value: " + v);
         }
     }
 

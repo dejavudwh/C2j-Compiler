@@ -3,6 +3,11 @@ package interpreter;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ *
+ * @author dejavudwh isHudw
+ */
+
 public class FunctionArgumentList {
     private static FunctionArgumentList instance = null;
     private ArrayList<Object> funcArgList = new ArrayList<>();

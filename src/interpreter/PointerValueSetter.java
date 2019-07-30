@@ -3,6 +3,8 @@ package interpreter;
 import symboltable.Declarator;
 import symboltable.Symbol;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -11,7 +13,12 @@ import java.util.Map;
 
 public class PointerValueSetter implements ValueSetter {
     private Symbol symbol;
-    private int index = 0;
+    private int index;
+
+    public PointerValueSetter(Symbol symbol, int index) {
+        this.symbol = symbol;
+        this.index = index;
+    }
 
     @Override
     public void setValue(Object obj) {
@@ -29,10 +36,10 @@ public class PointerValueSetter implements ValueSetter {
             }
 
             if (sz == 4) {
-                content[index] = (byte) ((i >> 24) & 0xFF);
-                content[index + 1] = (byte) ((i >> 16) & 0xFF);
-                content[index + 2] = (byte) ((i >> 8) & 0xFF);
-                content[index + 3] = (byte) (i & 0xFF);
+                content[index * 4] = (byte) ((i >> 24) & 0xFF);
+                content[index * 4 + 1] = (byte) ((i >> 16) & 0xFF);
+                content[index * 4 + 2] = (byte) ((i >> 8) & 0xFF);
+                content[index * 4 + 3] = (byte) (i & 0xFF);
             } else {
                 content[index] = (byte) (i & 0xFF);
             }
@@ -41,11 +48,7 @@ public class PointerValueSetter implements ValueSetter {
             e.printStackTrace();
             System.exit(1);
         }
-    }
-
-    public PointerValueSetter(Symbol symbol, int index) {
-        this.symbol = symbol;
-        this.index = index;
+//        memHeap.memMap.put(addr, content);
     }
 
     @Override

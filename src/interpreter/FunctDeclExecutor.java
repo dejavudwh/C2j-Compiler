@@ -60,7 +60,7 @@ public class FunctDeclExecutor extends BaseExecutor {
         argsSymList = FunctionArgumentList.getInstance().getFuncArgSymsList(true);
         Symbol eachSym = args;
         int count = 0;
-        int count2 = 1;
+        int count2 = argsSymList.size() == 1 ? 0 : 1;
         while (eachSym != null) {
             ValueSetter setter = (ValueSetter) eachSym;
             try {
@@ -74,6 +74,12 @@ public class FunctDeclExecutor extends BaseExecutor {
                 eachSym.addDeclarator(new TypeLink(true, false, ((Symbol) argsSymList.get(count2)).getDeclarator(Declarator.ARRAY)));
                 count2++;
             }
+
+            if (eachSym.getDeclarator(Declarator.POINTER) != null) {
+                eachSym.addDeclarator(new TypeLink(true, false, ((Symbol) argsSymList.get(count2)).getDeclarator(Declarator.POINTER)));
+                count2++;
+            }
+
 
             eachSym = eachSym.getNextSymbol();
         }

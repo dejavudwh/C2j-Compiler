@@ -92,6 +92,7 @@ public class ClibCall {
 
     private Object handlePrintfCall() {
         ArrayList<Object> argsList = FunctionArgumentList.getInstance().getFuncArgList(false);
+        ArrayList<Object> argsSymList = FunctionArgumentList.getInstance().getFuncArgSymsList(false);
         String argStr = (String) argsList.get(0);
         String formatStr = "";
 
