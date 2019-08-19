@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 public class Input {
     private final int MAXLOOK = 16;
-    private final int MAXLEX = 10;
+    private final int MAXLEX = 200;
     private final int BUFSIZE =  (MAXLEX * 3 ) + (2 * MAXLOOK);
     private int bufferEndFlag = BUFSIZE;
     private final int DANGER = bufferEndFlag - MAXLOOK;

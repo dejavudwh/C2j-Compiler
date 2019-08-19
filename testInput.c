@@ -30,13 +30,11 @@ void quickSort(int a[10], int p, int r) {
     }
 }
 
-
-
 void main () {
     int a[10];
     int i;
     int t;
-
+    int b;
     printf("Array before quicksort:");
     for(i = 0; i < 10; i++) {
         t = (10 - i);

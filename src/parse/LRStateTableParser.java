@@ -23,7 +23,7 @@ public class LRStateTableParser {
     String text = "";
     int enumVal = 0;
     private String relOperatorText;
-
+    int initialValue;
 
     private Stack<Integer> statusStack = new Stack<>();
     private Stack<Object> valueStack = new Stack<>();
@@ -186,9 +186,14 @@ public class LRStateTableParser {
 
             case SyntaxProductionInit.VarDecl_Equal_Initializer_TO_Decl:
                 //Here you need to set the Symbol object for the response, otherwise there will be an error above Symbol symbol = (Symbol)attributeForParentNode;
-                attributeForParentNode = (Symbol) valueStack.get(valueStack.size() - 2);
+                attributeForParentNode = (Symbol) valueStack.get(valueStack.size() - 3);
+                ((Symbol) attributeForParentNode).value = initialValue;
                 break;
 
+            case SyntaxProductionInit.Expr_TO_Initializer:
+                initialValue = (Integer) valueStack.get(valueStack.size() - 1);
+                System.out.println(initialValue);
+                break;
             case SyntaxProductionInit.NewName_LP_VarList_RP_TO_FunctDecl:
                 setFunctionSymbol(true);
                 Symbol argList = (Symbol) valueStack.get(valueStack.size() - 2);
