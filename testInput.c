@@ -35,6 +35,11 @@ void main () {
     int i;
     int t;
     int b;
+    int g = 5;
+    for(i = 0; i < 10; i++) {
+    printf("asd %d", g);
+    g = g + 1;
+    }
     printf("Array before quicksort:");
     for(i = 0; i < 10; i++) {
         t = (10 - i);

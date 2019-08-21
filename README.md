@@ -170,6 +170,83 @@ if_icmpge branch0
 	istore	1
 goto loop0
 ```
+
+# C language source program test
+
+```c
+void quicksort(int A[10], int p, int r) {
+    int x;
+    int i;
+    i = p - 1;
+    int j;
+    int t;
+    int v;
+    v = r - 1;
+    if (p < r) {
+        x = A[r];
+        for (j = p; j <= v; j++) {
+            if (A[j] <= x) {
+                i++;
+                t = A[i];
+                A[i] = A[j];
+                A[j] = t;
+            }
+        }
+        v = i + 1;
+        t = A[v];
+        A[v] = A[r];
+        A[r] = t;
+        t = v - 1;
+        quicksort(A, p, t);
+        t = v + 1;
+        quicksort(A, t, r);
+    }
+}
+
+void main () {
+    int a[10];
+    int i;
+    int t;
+    printf("before quick sort:");
+    for(i = 0; i < 10; i++) {
+        t = (10 - i);
+        a[i] = t;
+        printf("value of a[%d] is %d", i, a[i]);
+    }
+    quicksort(a, 0, 9);
+    printf("after quick sort:");
+    for (i = 0; i < 10; i++) {
+        printf("value of a[%d] is %d", i, a[i]);
+    }
+}
+```
+
+```c
+struct Body {
+    int a;
+    char c;
+};
+
+void main() {
+    struct Body body;
+    body.a = 66;
+    printf("The value of a of this structure is %d", body.a);
+}
+```
+
+```c
+struct Body {
+    int a;
+    char c;
+};
+
+void main() {
+    struct Body bodys[5];
+    bodys[2].a = 66;
+    printf("The value of a of this structure is %d", bodys[2].a);
+}
+```
+
 # doc
-> Waiting for the update
+> [Some notes](https://dejavudwh.cn/compiler/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AA%E7%BC%96%E8%AF%91%E5%99%A8%EF%BC%88%E5%8D%81%E5%9B%9B%EF%BC%89.html)
 

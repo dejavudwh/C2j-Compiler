@@ -192,7 +192,6 @@ public class LRStateTableParser {
 
             case SyntaxProductionInit.Expr_TO_Initializer:
                 initialValue = (Integer) valueStack.get(valueStack.size() - 1);
-                System.out.println(initialValue);
                 break;
             case SyntaxProductionInit.NewName_LP_VarList_RP_TO_FunctDecl:
                 setFunctionSymbol(true);
