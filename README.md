@@ -173,6 +173,8 @@ goto loop0
 
 # C language source program test
 
+> Code generation does not support Pointers
+
 ```c
 void quicksort(int A[10], int p, int r) {
     int x;
@@ -218,6 +220,50 @@ void main () {
     for (i = 0; i < 10; i++) {
         printf("value of a[%d] is %d", i, a[i]);
     }
+}
+```
+
+```
+void main() {
+    struct s1 {
+        int a1;
+    };
+
+    struct s2 {
+        struct s1 s;
+        int a2;
+    };
+
+    struct s2 tag;
+    tag.s.a1 = 1;
+    tag.a2 = 2;
+    printf("set filed a1 of struct s1 to value : %d, and a2 of tag to value : %d", tag.s.a1, tag.a2);
+}
+```
+
+```
+void main() {
+    char *p;
+    p = malloc(2);
+    *(p+0) = 1;
+    *(p+1) = 2;
+    printf("p[0] is : %d, p[1] is : %d", *(p+0), *(p+1));
+}
+```
+
+```
+void main() {
+    struct TAG {
+        char c;
+        char b[3];
+        int p;
+    } tag;
+    struct TAG* pTag;
+    pTag = malloc(100);
+    pTag[0] = 5;
+    pTag[1] = 10;
+    pTag[2] = 12;
+    printf("c is %d, b[0] is %d, b[2] is %d ", pTag->c, pTag->b[0],  pTag->b[1]);
 }
 ```
 
