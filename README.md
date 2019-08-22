@@ -223,7 +223,7 @@ void main () {
 }
 ```
 
-```
+```c
 void main() {
     struct s1 {
         int a1;
@@ -241,7 +241,7 @@ void main() {
 }
 ```
 
-```
+```c
 void main() {
     char *p;
     p = malloc(2);
@@ -251,7 +251,7 @@ void main() {
 }
 ```
 
-```
+```c
 void main() {
     struct TAG {
         char c;
@@ -259,7 +259,9 @@ void main() {
         int p;
     } tag;
     struct TAG* pTag;
-    pTag = malloc(100);
+    int sz;
+    sz = sizeof(tag);
+    pTag = malloc(sz + 8);
     pTag[0] = 5;
     pTag[1] = 10;
     pTag[2] = 12;
